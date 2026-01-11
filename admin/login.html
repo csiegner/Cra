@@ -57,6 +57,18 @@
   </div>
 
 <script>
+const params = new URLSearchParams(window.location.search);
+if (params.get("logged_out") === "1") {
+  // Do not auto-redirect, show login UI
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.init();
+    window.netlifyIdentity.open("login");
+  }
+  throw new Error("Logout flow complete, stay on login.");
+}
+
+  
+  
   const DEST = "/admin/publisher/";
 
   function go() {
