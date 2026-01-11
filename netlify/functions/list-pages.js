@@ -1,47 +1,70 @@
-export default async (request, context) => {
+// netlify/functions/list-pages.js
+export default async () => {
   try {
     const token = process.env.GITHUB_TOKEN;
     const owner = process.env.GITHUB_OWNER;
     const repo = process.env.GITHUB_REPO;
-    const dir = process.env.GITHUB_PAGES_DIR || "cra/ai";
+
+    // You told me published pages live in /cra/
+    const dir = "cra";
 
     if (!token || !owner || !repo) {
-      return new Response(JSON.stringify({ error: "Missing GitHub env vars" }), { status: 500 });
+      return json(500, {
+        ok: false,
+        error: "Missing GitHub env vars. Need GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO."
+      });
     }
 
-    // List directory contents
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${dir}`;
+
     const res = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github+json",
-        "User-Agent": "cra-publisher"
-      }
+      headers: ghHeaders(token)
     });
 
     if (!res.ok) {
       const text = await res.text();
-      return new Response(JSON.stringify({ error: "GitHub list failed", details: text }), { status: res.status });
+      return json(res.status, {
+        ok: false,
+        error: "GitHub list failed.",
+        details: text
+      });
     }
 
     const items = await res.json();
 
-    // Only return files (not subdirs)
-    const files = (Array.isArray(items) ? items : [])
-      .filter((x) => x.type === "file")
-      .map((x) => ({
-        name: x.name,
-        path: x.path,
-        sha: x.sha,
-        size: x.size,
-        download_url: x.download_url
-      }));
+    // items is an array of repo contents objects
+    const pages = (Array.isArray(items) ? items : [])
+      .filter((x) => x && x.type === "file")
+      .map((x) => {
+        const slug = x.name; // filename, e.g. landing.html
+        return {
+          slug,
+          url: `/cra/${encodeURIComponent(slug)}`,
+          // optional debug fields if you ever want them:
+          // path: x.path,
+          // sha: x.sha
+        };
+      })
+      .sort((a, b) => a.slug.localeCompare(b.slug));
 
-    return new Response(JSON.stringify({ dir, files }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    return json(200, { ok: true, pages });
   } catch (err) {
-    return new Response(JSON.stringify({ error: "Unexpected error", details: String(err) }), { status: 500 });
+    return json(500, { ok: false, error: "Unexpected error.", details: String(err) });
   }
 };
+
+function ghHeaders(token) {
+  return {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/vnd.github+json",
+    "User-Agent": "cra-publisher"
+  };
+}
+
+function json(status, payload) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "Content-Type": "application/json" }
+  });
+}
+
