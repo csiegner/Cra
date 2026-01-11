@@ -1,136 +1,90 @@
 // netlify/functions/publish.js
-
-const json = (statusCode, payload) => ({
-  statusCode,
-  headers: {
-    "Content-Type": "application/json",
-    "Cache-Control": "no-store",
-  },
-  body: JSON.stringify(payload),
-});
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Methods": "POST,OPTIONS",
-};
-
-const withCors = (resp) => ({
-  ...resp,
-  headers: { ...(resp.headers || {}), ...corsHeaders },
-});
-
-exports.handler = async (event) => {
-  // Preflight
-  if (event.httpMethod === "OPTIONS") {
-    return withCors({ statusCode: 204, body: "" });
-  }
-
-  if (event.httpMethod !== "POST") {
-    return withCors(json(405, { ok: false, error: "Method not allowed" }));
-  }
-
+export default async (request) => {
   try {
     const token = process.env.GITHUB_TOKEN;
     const owner = process.env.GITHUB_OWNER;
     const repo = process.env.GITHUB_REPO;
-    const branch = process.env.GITHUB_BRANCH || "main";
+
+    const dir = "cra"; // your target directory
 
     if (!token || !owner || !repo) {
-      return withCors(
-        json(500, { ok: false, error: "Missing env vars", hasToken: !!token, owner, repo, branch })
-      );
+      return json(500, {
+        error: "Missing GitHub env vars. Need GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO."
+      });
     }
 
-    const { slug, html, title } = JSON.parse(event.body || "{}");
+    const body = await request.json().catch(() => ({}));
+    const filename = sanitizeFilename(body.filename);
+    const html = typeof body.html === "string" ? body.html : "";
+    const overwrite = !!body.overwrite;
 
-    // Slug rules: lowercase letters, numbers, hyphen
-    const slugOk = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug || "");
-    if (!slugOk) {
-      return withCors(
-        json(400, {
-          ok: false,
-          error: "Invalid slug. Use lowercase letters, numbers, and hyphens only.",
-        })
-      );
+    if (!filename) return json(400, { error: "Invalid filename." });
+    if (!html || html.trim().length < 10) return json(400, { error: "HTML is empty." });
+
+    const path = `${dir}/${filename}`;
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+    let sha = null;
+    const checkRes = await fetch(apiUrl, { headers: ghHeaders(token) });
+
+    if (checkRes.ok) {
+      const existing = await checkRes.json();
+      sha = existing.sha;
+
+      if (!overwrite) {
+        return json(409, {
+          error: "File already exists. Turn on overwrite to replace it.",
+          filename,
+          path
+        });
+      }
+    } else if (checkRes.status !== 404) {
+      const t = await checkRes.text();
+      return json(checkRes.status, { error: "GitHub check failed.", details: t });
     }
 
-    if (!html || String(html).trim().length < 20) {
-      return withCors(json(400, { ok: false, error: "HTML is empty" }));
-    }
-
-    // Force published path
-    const path = `cra/${slug}/index.html`;
-
-    // Optional: wrap fragment HTML into a full document if needed
-    const isFullDoc = /<html[\s>]/i.test(html) && /<body[\s>]/i.test(html);
-    const finalHtml = isFullDoc
-      ? html
-      : `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${(title || slug).replace(/</g, "&lt;")}</title>
-</head>
-<body>
-${html}
-</body>
-</html>`;
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/vnd.github+json",
-      "User-Agent": "cra-publisher",
-    };
-
-    const apiBase = "https://api.github.com";
-    const getUrl = `${apiBase}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${branch}`;
-
-    // 1) Check if file exists (to get sha)
-    let existingSha = null;
-    const getRes = await fetch(getUrl, { headers });
-    if (getRes.status === 200) {
-      const existing = await getRes.json();
-      existingSha = existing.sha;
-    } else if (getRes.status !== 404) {
-      const text = await getRes.text();
-      return withCors(json(502, { ok: false, step: "github_read", status: getRes.status, details: text }));
-    }
-
-    // 2) Create/update file
-    const putUrl = `${apiBase}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
-    const contentBase64 = Buffer.from(finalHtml, "utf8").toString("base64");
-
-    const body = {
-      message: `Publish /cra/${slug}/`,
-      content: contentBase64,
-      branch,
-    };
-    if (existingSha) body.sha = existingSha;
-
-    const putRes = await fetch(putUrl, {
+    const putRes = await fetch(apiUrl, {
       method: "PUT",
-      headers,
-      body: JSON.stringify(body),
+      headers: { ...ghHeaders(token), "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: sha ? `Update ${path}` : `Create ${path}`,
+        content: Buffer.from(html, "utf8").toString("base64"),
+        sha: sha || undefined
+      })
     });
 
     if (!putRes.ok) {
-      const text = await putRes.text();
-      return withCors(json(502, { ok: false, step: "github_write", status: putRes.status, details: text }));
+      const t = await putRes.text();
+      return json(putRes.status, { error: "GitHub write failed.", details: t });
     }
 
-    const putJson = await putRes.json();
+    const publicUrl = `/cra/${encodeURIComponent(filename)}`;
 
-    return withCors(
-      json(200, {
-        ok: true,
-        path,
-        url: `/cra/${slug}/`,
-        commit: putJson.commit?.sha || null,
-      })
-    );
+    return json(200, { ok: true, filename, path, publicUrl, overwritten: !!sha });
   } catch (err) {
-    return withCors(json(500, { ok: false, error: "Server error", details: String(err) }));
+    return json(500, { error: "Unexpected error.", details: String(err) });
   }
 };
+
+function ghHeaders(token) {
+  return {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/vnd.github+json",
+    "User-Agent": "cra-publisher"
+  };
+}
+
+function sanitizeFilename(name) {
+  const raw = String(name || "").trim();
+  if (!raw) return "";
+  if (raw.includes("/") || raw.includes("\\") || raw.includes("..")) return "";
+  if (!raw.includes(".")) return raw + ".html";
+  return raw;
+}
+
+function json(status, payload) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "Content-Type": "application/json" }
+  });
+}
