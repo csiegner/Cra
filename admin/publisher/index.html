@@ -8,69 +8,176 @@
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <style>
-    body {
+    :root{
+      --teal:#0e5e6f;
+      --teal2:#5fb3b3;
+      --coral:#ff6b5a;
+      --slate:#2e3a46;
+      --bg:#f8f9fa;
+      --white:#ffffff;
+    }
+    body{
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #0e5e6f, #5fb3b3);
+      background: linear-gradient(135deg, var(--teal), var(--teal2));
       min-height: 100vh;
       margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 20px;
     }
-    .card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 24px;
-      max-width: 520px;
-      width: calc(100% - 32px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    .card{
+      background: var(--white);
+      border-radius: 18px;
+      padding: 22px;
+      width: min(860px, 100%);
+      box-shadow: 0 20px 40px rgba(0,0,0,.18);
     }
-    h1 { margin: 0 0 10px; color: #0e5e6f; font-size: 26px; }
-    p { color: #2e3a46; line-height: 1.5; margin: 0 0 14px; }
-    button {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 12px;
-      font-weight: 700;
+    header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 14px;
     }
-    .logout { background: #ff6b5a; color: #fff; }
-    .publish { background: #0e5e6f; color: #fff; }
-    .status {
-      margin-top: 14px;
-      font-size: 14px;
-      color: #2e3a46;
+    h1{
+      margin:0;
+      color: var(--teal);
+      font-size: 26px;
+      line-height: 1.15;
+    }
+    .sub{
+      margin-top: 6px;
+      color: var(--slate);
       opacity: .85;
+    }
+    .meta{
+      text-align:right;
+      color: var(--slate);
+      opacity:.85;
+      font-size: 13px;
+      margin-top: 4px;
       word-break: break-word;
     }
-    .small { font-size: 12px; opacity: .75; margin-top: 8px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    label{
+      display:block;
+      font-weight: 700;
+      color: var(--slate);
+      margin-bottom: 6px;
+    }
+    input, textarea{
+      width:100%;
+      box-sizing:border-box;
+      border: 1px solid rgba(46,58,70,.25);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 15px;
+      outline: none;
+      background: var(--bg);
+      color: var(--slate);
+    }
+    textarea{
+      min-height: 260px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      line-height: 1.35;
+    }
+    .hint{
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--slate);
+      opacity: .8;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    button{
+      border: none;
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .btnPublish{ background: var(--teal); color: #fff; }
+    .btnLogout{ background: var(--coral); color: #fff; }
+
+    .status{
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(14,94,111,.08);
+      color: var(--slate);
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .status.ok{ background: rgba(14,94,111,.10); }
+    .status.bad{ background: rgba(255,107,90,.16); }
+
+    @media (max-width: 700px){
+      .actions{ grid-template-columns: 1fr; }
+      header{ flex-direction: column; }
+      .meta{ text-align:left; }
+    }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <h1>Catalyst Ridge Publisher</h1>
-    <p id="msg">Checking session…</p>
+    <header>
+      <div>
+        <h1>Catalyst Ridge Publisher</h1>
+        <div class="sub">Paste HTML, choose a slug, publish to <strong>/cra/slug/</strong>.</div>
+      </div>
+      <div class="meta" id="who"></div>
+    </header>
 
-    <button class="publish" id="publishBtn" type="button">Publish page (coming next)</button>
-    <button class="logout" id="logoutBtn" type="button">Log out</button>
+    <div class="grid">
+      <div>
+        <label for="slug">Slug</label>
+        <input id="slug" placeholder="example: ai-readiness-snapshot" autocomplete="off" />
+        <div class="hint">Lowercase letters and numbers, use single dashes. No spaces.</div>
+      </div>
 
-    <div class="status" id="status"></div>
-    <div class="small" id="debug"></div>
+      <div>
+        <label for="html">HTML</label>
+        <textarea id="html" placeholder="Paste full HTML here…"></textarea>
+        <div class="hint">We will publish as: <strong>/cra/&lt;slug&gt;/index.html</strong></div>
+      </div>
+
+      <div class="actions">
+        <button class="btnPublish" id="btnPublish" type="button">Publish</button>
+        <button class="btnLogout" id="btnLogout" type="button">Log out</button>
+      </div>
+
+      <div class="status" id="status">Ready.</div>
+    </div>
   </div>
 
   <script>
-    const msgEl = document.getElementById("msg");
+    const whoEl = document.getElementById("who");
     const statusEl = document.getElementById("status");
-    const debugEl = document.getElementById("debug");
-    const logoutBtn = document.getElementById("logoutBtn");
+    const slugEl = document.getElementById("slug");
+    const htmlEl = document.getElementById("html");
+    const btnPublish = document.getElementById("btnPublish");
+    const btnLogout = document.getElementById("btnLogout");
 
-    function setMsg(t){ msgEl.textContent = t; }
-    function setStatus(t){ statusEl.textContent = t; }
-    function setDebug(t){ debugEl.textContent = t; }
+    function setStatus(msg, kind){
+      statusEl.className = "status" + (kind ? (" " + kind) : "");
+      statusEl.textContent = msg;
+    }
 
     function clearAllIdentityStorage(){
       const keys = [
@@ -87,62 +194,61 @@
         try { localStorage.removeItem(k); } catch(e){}
         try { sessionStorage.removeItem(k); } catch(e){}
       });
+      try { Object.keys(localStorage).forEach(k => { if (k.toLowerCase().startsWith("gotrue")) localStorage.removeItem(k); }); } catch(e){}
+      try { Object.keys(sessionStorage).forEach(k => { if (k.toLowerCase().startsWith("gotrue")) sessionStorage.removeItem(k); }); } catch(e){}
+    }
 
-      // Also clear any key that starts with "gotrue"
-      try {
-        Object.keys(localStorage).forEach(k => { if (k.toLowerCase().startsWith("gotrue")) localStorage.removeItem(k); });
-      } catch(e){}
-      try {
-        Object.keys(sessionStorage).forEach(k => { if (k.toLowerCase().startsWith("gotrue")) sessionStorage.removeItem(k); });
-      } catch(e){}
+    function validSlug(s){
+      return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s);
     }
 
     async function init(){
       if (!window.netlifyIdentity){
-        setMsg("Netlify Identity failed to load.");
-        setStatus("Check that the identity widget script is reachable.");
-        return;
-      }
-
-      // If we just logged out, do not bounce back in the same tab
-      if (sessionStorage.getItem("cra_logged_out") === "1") {
-        setMsg("Logged out.");
-        setStatus("You can close this tab or go to /admin/login.html to log back in.");
-        sessionStorage.removeItem("cra_logged_out");
+        setStatus("Netlify Identity widget failed to load.", "bad");
         return;
       }
 
       window.netlifyIdentity.init();
-
       const user = window.netlifyIdentity.currentUser();
+
       if (!user){
-        setMsg("Not logged in. Sending you to login…");
         window.location.href = "/admin/login.html";
         return;
       }
 
-      setMsg("You are logged in. This page confirms admin access.");
-      setStatus("Authenticated as " + user.email);
-      setDebug("User id: " + (user.id || "n/a"));
+      whoEl.textContent = "Authenticated as " + user.email;
+      setStatus("Ready.", "ok");
     }
 
-    logoutBtn.addEventListener("click", async () => {
-      setMsg("Logging out…");
-      setStatus("");
-
+    btnLogout.addEventListener("click", async () => {
+      setStatus("Logging out…");
       try{
-        if (window.netlifyIdentity){
-          // Logout can be async, give it time to complete
-          await window.netlifyIdentity.logout();
-        }
+        await window.netlifyIdentity.logout();
       } catch(e){
-        // Ignore and still clear storage
       } finally {
         clearAllIdentityStorage();
-        sessionStorage.setItem("cra_logged_out", "1");
-        // Force a true reload so cached identity state cannot rehydrate
         window.location.href = "/admin/login.html?logged_out=1";
       }
+    });
+
+    btnPublish.addEventListener("click", async () => {
+      const slug = slugEl.value.trim();
+      const html = htmlEl.value;
+
+      if (!slug || !validSlug(slug)){
+        setStatus("Invalid slug. Use lowercase letters and numbers with dashes.", "bad");
+        return;
+      }
+      if (!html || html.length < 20){
+        setStatus("HTML looks empty.", "bad");
+        return;
+      }
+
+      // We will wire this to a server-side function next
+      setStatus(
+        "UI is working.\nNext step: add Netlify Function to commit this HTML to GitHub as /cra/" + slug + "/index.html and trigger deploy.",
+        "ok"
+      );
     });
 
     window.addEventListener("load", init);
