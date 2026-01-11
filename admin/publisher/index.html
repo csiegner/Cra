@@ -1,399 +1,395 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Catalyst Ridge Publisher</title>
-
+  <title>Publisher</title>
   <style>
-    :root{
-      --teal-900:#0E5E6F;
-      --teal-700:#14788B;
-      --teal-100:#D7F1F4;
-      --coral:#FF6B5A;
-      --ink:#12313A;
-      --muted:#6B7B83;
-      --card:#ffffff;
-      --bg1:#0E5E6F;
-      --bg2:#17A2B8;
-      --shadow: 0 20px 55px rgba(0,0,0,.25);
-      --radius: 22px;
+    :root {
+      color-scheme: dark;
+      --bg: #0b0f14;
+      --panel: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.10);
+      --text: #e8eef6;
+      --muted: rgba(232,238,246,0.70);
+      --ok: #9affc2;
+      --err: #ffb3a3;
+      --link: #8fe7ff;
+      --accent: rgba(0,200,255,0.12);
+      --accentBorder: rgba(0,200,255,0.40);
+      --danger: rgba(255,90,90,0.12);
+      --dangerBorder: rgba(255,90,90,0.45);
+      --radius: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
+    body {
+      margin: 0;
+      padding: 24px;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      color:var(--ink);
-      min-height:100vh;
-      background: radial-gradient(1200px 600px at 70% 20%, rgba(255,255,255,.20), rgba(255,255,255,0)),
-                  linear-gradient(160deg, var(--bg1), var(--bg2));
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:28px 16px 60px;
+      background: var(--bg);
+      color: var(--text);
     }
 
-    .wrap{width:min(980px, 100%)}
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
 
-    .card{
-      background:var(--card);
+    header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 800;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     }
 
-    .header{
-      padding:22px 22px 14px;
-      background: linear-gradient(90deg, var(--teal-900), rgba(20,120,139,.55));
-      color:#fff;
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
     }
 
-    .headerRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      outline: none;
+      font-family: var(--mono);
+      font-size: 13px;
     }
 
-    .title{
-      font-size:28px;
-      line-height:1.15;
-      margin:0 0 6px;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-    .subtitle{
-      margin:0;
-      opacity:.9;
-      font-size:14px;
-    }
-
-    .authed{
-      font-size:13px;
-      opacity:.9;
-      text-align:right;
-      white-space:nowrap;
+    textarea {
+      width: 100%;
+      min-height: 360px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      outline: none;
+      resize: vertical;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.45;
     }
 
-    .content{padding:18px 22px 22px}
-
-    label{
-      display:block;
-      font-weight:700;
-      margin:14px 0 8px;
+    .rowline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
     }
 
-    input[type="text"]{
-      width:100%;
-      padding:14px 14px;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.15);
-      font-size:16px;
-      outline:none;
+    .check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      user-select: none;
     }
 
-    textarea{
-      width:100%;
-      min-height:220px;
-      padding:14px 14px;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.15);
-      font-size:14px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      outline:none;
-      resize:vertical;
+    button {
+      appearance: none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
     }
 
-    .hint{
-      margin-top:6px;
-      font-size:13px;
-      color:var(--muted);
+    button.primary {
+      border-color: var(--accentBorder);
+      background: var(--accent);
     }
 
-    .checkRow{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-top:12px;
-      padding:10px 12px;
-      border-radius:14px;
-      background: rgba(215,241,244,.55);
-      border: 1px solid rgba(14,94,111,.18);
-    }
-    .checkRow input{transform: scale(1.1)}
-    .checkRow span{
-      font-weight:700;
-      color: var(--ink);
-      font-size:14px;
+    button.danger {
+      border-color: var(--dangerBorder);
+      background: var(--danger);
     }
 
-    .btnRow{
-      display:flex;
-      gap:14px;
-      margin-top:16px;
-      flex-wrap:wrap;
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
-    .btn{
-      border:none;
-      cursor:pointer;
-      font-weight:800;
-      font-size:16px;
-      padding:14px 16px;
-      border-radius:14px;
-      min-width:220px;
-    }
-    .btn.primary{background:var(--teal-900); color:#fff}
-    .btn.danger{background:var(--coral); color:#fff}
-    .btn.secondary{
-      background:#F2F5F7;
-      color:var(--ink);
-      border:1px solid rgba(0,0,0,.12);
-      min-width:auto;
-      padding:10px 12px;
-      font-size:14px;
-      border-radius:12px;
+    .notice {
+      margin-top: 12px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      white-space: pre-wrap;
+      font-size: 13px;
     }
 
-    .notice{
-      margin-top:14px;
-      padding:12px 12px;
-      border-radius:14px;
-      background:#F2F5F7;
-      border:1px solid rgba(0,0,0,.10);
-      font-size:14px;
-      color:var(--ink);
-      white-space:pre-wrap;
-    }
-    .notice.ok{
-      background: rgba(215,241,244,.65);
-      border-color: rgba(14,94,111,.20);
-    }
-    .notice.err{
-      background: rgba(255,107,90,.12);
-      border-color: rgba(255,107,90,.30);
+    .notice.ok { border-color: rgba(154,255,194,0.35); color: var(--ok); }
+    .notice.err { border-color: rgba(255,179,163,0.35); color: var(--err); }
+    .notice.info { color: var(--muted); }
+
+    .listHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
-    hr.soft{
-      border:none;
-      height:1px;
-      background: rgba(0,0,0,.10);
-      margin:18px 0 14px;
+    .listHeader h2 {
+      font-size: 16px;
+      margin: 0;
+      font-weight: 800;
     }
 
-    .listHeader{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-top:6px;
-    }
-    .listHeader h3{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.2px;
+    #listStatus {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
     }
 
-    .list{
-      margin-top:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    .listWrap {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
     }
 
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.10);
-      background:#fff;
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
     }
 
-    .rowName{
-      font-weight:800;
-      font-size:16px;
-      color:var(--ink);
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      padding-right:8px;
-      max-width:60%;
+    .rowName {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 60%;
     }
 
-    .rowActions{
-      display:flex;
-      gap:10px;
-      flex-shrink:0;
-      align-items:center;
+    .rowActions {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
-    a.viewBtn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      text-decoration:none;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(0,0,0,.18);
-      background:#fff;
-      color:var(--ink);
-      font-weight:800;
-      font-size:14px;
-      min-width:110px;
+    a.viewBtn {
+      color: var(--link);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
     }
 
-    button.trash{
-      width:44px;
-      height:44px;
-      border-radius:12px;
-      border:1px solid rgba(255,107,90,.55);
-      background:#fff;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    .trash {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 36px;
+      padding: 0;
+      border-radius: 12px;
+      font-size: 14px;
     }
-    button.trash:hover{background: rgba(255,107,90,.08)}
-    .trash svg{width:18px; height:18px; fill: var(--coral)}
 
-    .muted{color:var(--muted); font-size:13px}
+    .mutedHint {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="header">
-        <div class="headerRow">
-          <div>
-            <h1 class="title">Catalyst Ridge Publisher</h1>
-            <p class="subtitle">Paste HTML, choose a slug, publish to <b>/cra/slug/</b>.</p>
-          </div>
-          <div class="authed">
-            <div id="authedAs">Authenticated as: …</div>
-          </div>
+  <div class="container">
+    <header>
+      <div>
+        <h1>HTML Publisher</h1>
+        <div class="sub">Publishes HTML files into <span class="pill">/cra/</span> and lists what exists.</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <label for="slug">Slug or filename</label>
+        <input id="slug" type="text" placeholder="example: landing or landing.html" />
+
+        <div class="rowline">
+          <label class="check">
+            <input id="overwrite" type="checkbox" />
+            Overwrite if exists
+          </label>
+
+          <button id="publishBtn" class="primary" type="button">Publish</button>
+          <button id="clearBtn" type="button">Clear</button>
+          <button id="refreshBtn" type="button">Refresh list</button>
+        </div>
+
+        <div id="notice" class="notice info" style="display:none;"></div>
+
+        <div class="mutedHint">
+          Tip: You can paste a full HTML document, including doctype.
         </div>
       </div>
 
-      <div class="content">
-        <label for="slug">Slug</label>
-        <input id="slug" type="text" placeholder="ai-test" autocomplete="off" />
-        <div class="hint">Lowercase letters and numbers, single dashes, no spaces.</div>
-
+      <div class="card">
         <label for="html">HTML</label>
-        <textarea id="html" placeholder="&lt;h1&gt;Hello&lt;/h1&gt;"></textarea>
-
-        <div class="checkRow">
-          <input id="overwrite" type="checkbox" />
-          <span>Overwrite if this slug already exists</span>
-        </div>
-
-        <div class="hint">Will publish as: <b>/cra/&lt;slug&gt;/index.html</b></div>
-
-        <div class="btnRow">
-          <button id="publishBtn" class="btn primary" type="button">Publish</button>
-          <button id="logoutBtn" class="btn danger" type="button">Log out</button>
-        </div>
-
-        <div id="result" class="notice" style="display:none;"></div>
-
-        <hr class="soft" />
-
-        <div class="listHeader">
-          <h3>Published pages</h3>
-          <button id="refreshBtn" class="btn secondary" type="button">Refresh</button>
-        </div>
-        <div id="listStatus" class="muted">Loading…</div>
-        <div id="list" class="list"></div>
+        <textarea id="html" placeholder="Paste HTML here..."></textarea>
       </div>
+    </div>
+
+    <div style="height: 16px;"></div>
+
+    <div class="card">
+      <div class="listHeader">
+        <div>
+          <h2>Published files</h2>
+          <div id="listStatus"></div>
+        </div>
+      </div>
+
+      <div id="list" class="listWrap"></div>
     </div>
   </div>
 
   <script>
-    // -------- helpers
-    const $ = (id) => document.getElementById(id);
+    function $(id) { return document.getElementById(id); }
 
-    function setNotice(type, msg) {
-      const el = $("result");
-      el.style.display = "block";
-      el.className = "notice " + (type === "ok" ? "ok" : type === "err" ? "err" : "");
-      el.textContent = msg;
+    function setNotice(kind, msg) {
+      const box = $("notice");
+      if (!kind || !msg) {
+        box.style.display = "none";
+        box.textContent = "";
+        box.className = "notice info";
+        return;
+      }
+      box.style.display = "block";
+      box.textContent = msg;
+      box.className = "notice " + (kind === "ok" ? "ok" : kind === "err" ? "err" : "info");
     }
 
-    function normalizeSlug(raw) {
-      return (raw || "")
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9-]/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
+    function normalizeSlug(input) {
+      const raw = String(input || "").trim();
+      if (!raw) return "";
+      // If user typed just a name, add .html
+      if (!raw.includes(".")) return raw + ".html";
+      return raw;
     }
 
     function trashIcon() {
-      return `
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v10h-2V9zm4 0h2v10h-2V9zM7 9h2v10H7V9z"/>
-        </svg>
-      `;
+      return "🗑️";
     }
 
-    // -------- auth display (Netlify Identity)
-    async function initIdentity() {
-      // Identity widget script is usually loaded in login.html, but this page can still use the API if it exists.
-      // If netlifyIdentity isn't present, we just skip the "authed as" line.
-      if (!window.netlifyIdentity) {
-        $("authedAs").textContent = "Authenticated as: (identity not loaded)";
-        return;
+    // Normalize list response into [{ slug, url }]
+    function normalizePagesResponse(data) {
+      // Preferred shape: { ok: true, pages: [{ slug, url }] }
+      if (data && data.ok && Array.isArray(data.pages)) {
+        return data.pages.map(p => ({
+          slug: String(p.slug || "").trim(),
+          url: p.url ? String(p.url) : ""
+        })).filter(p => p.slug);
       }
 
-      const user = window.netlifyIdentity.currentUser();
-      $("authedAs").textContent = user && user.email ? `Authenticated as: ${user.email}` : "Authenticated as: (unknown)";
+      // Alternate shape: { dir, files: [{ name, path, sha }] }
+      if (data && Array.isArray(data.files)) {
+        return data.files.map(f => ({
+          slug: String(f.name || "").trim(),
+          url: "/cra/" + String(f.name || "").trim()
+        })).filter(p => p.slug);
+      }
 
-      // Keep updated if user changes
-      window.netlifyIdentity.on("login", (u) => {
-        $("authedAs").textContent = u && u.email ? `Authenticated as: ${u.email}` : "Authenticated as: (unknown)";
-      });
-      window.netlifyIdentity.on("logout", () => {
-        $("authedAs").textContent = "Authenticated as: (logged out)";
-      });
+      return [];
     }
 
     // -------- list pages
     async function loadPages() {
-      $("listStatus").textContent = "Loading…";
+      $("listStatus").textContent = "Loading...";
       $("list").innerHTML = "";
+      setNotice("", "");
 
       let res, data;
       try {
-        res = await fetch("/.netlify/functions/list_pages", { method: "GET", credentials: "include" });
+        res = await fetch("/.netlify/functions/list-pages", { method: "GET", credentials: "include" });
         data = await res.json();
       } catch (e) {
         $("listStatus").textContent = "Could not load list.";
-        setNotice("err", "List failed: " + e.message);
+        setNotice("err", "List failed: " + (e && e.message ? e.message : String(e)));
         return;
       }
 
-      if (!data || !data.ok) {
-        $("listStatus").textContent = "List unavailable.";
-        setNotice("err", "List failed: " + (data && data.error ? data.error : "Unknown error"));
-        return;
-      }
+      const pages = normalizePagesResponse(data);
 
-      const pages = Array.isArray(data.pages) ? data.pages : [];
-      if (pages.length === 0) {
+      if (!pages.length) {
+        // If the endpoint returned ok false, surface the error
+        if (data && data.ok === false) {
+          $("listStatus").textContent = "List unavailable.";
+          setNotice("err", "List failed: " + (data.error ? data.error : "Unknown error"));
+          return;
+        }
+
         $("listStatus").textContent = "No pages yet.";
         return;
       }
 
       $("listStatus").textContent = "";
-
       for (const p of pages) {
         const slug = p.slug || "";
-        const url = p.url || ("/cra/" + slug + "/");
+        const url = p.url || ("/cra/" + slug);
 
         const row = document.createElement("div");
         row.className = "row";
@@ -410,31 +406,32 @@
         view.href = url;
         view.target = "_blank";
         view.rel = "noopener";
-        view.textContent = "View Page";
+        view.textContent = "View";
 
         const del = document.createElement("button");
-        del.className = "trash";
+        del.className = "trash danger";
         del.type = "button";
-        del.innerHTML = trashIcon();
+        del.textContent = trashIcon();
         del.title = "Delete";
+
         del.addEventListener("click", async () => {
-          const ok = confirm(`Delete /cra/${slug}/ ? This cannot be undone.`);
+          const ok = confirm(`Delete /cra/${slug}? This cannot be undone.`);
           if (!ok) return;
 
           del.disabled = true;
           try {
-            const r = await fetch("/.netlify/functions/delete_page", {
+            const r = await fetch("/.netlify/functions/delete-page", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: "include",
               body: JSON.stringify({ slug })
             });
             const j = await r.json();
-            if (!j.ok) throw new Error(j.error || "Delete failed");
-            setNotice("ok", `Deleted: /cra/${slug}/`);
+            if (!j || !j.ok) throw new Error((j && j.error) ? j.error : "Delete failed");
+            setNotice("ok", `Deleted: /cra/${slug}`);
             await loadPages();
           } catch (e) {
-            setNotice("err", "Delete failed: " + e.message);
+            setNotice("err", "Delete failed: " + (e && e.message ? e.message : String(e)));
           } finally {
             del.disabled = false;
           }
@@ -456,7 +453,7 @@
       $("slug").value = slug;
 
       if (!slug) {
-        setNotice("err", "Please enter a slug.");
+        setNotice("err", "Please enter a slug or filename.");
         return;
       }
 
@@ -469,7 +466,7 @@
       const overwrite = $("overwrite").checked;
 
       $("publishBtn").disabled = true;
-      setNotice("", "Publishing…");
+      setNotice("info", "Publishing...");
 
       try {
         const res = await fetch("/.netlify/functions/publish", {
@@ -480,47 +477,33 @@
         });
 
         const data = await res.json();
-        if (!data.ok) throw new Error(data.error || "Publish failed");
+        if (!data || !data.ok) throw new Error((data && data.error) ? data.error : "Publish failed");
 
-        setNotice("ok", `Published: ${data.url}\nCommit: ${data.commit || "(unknown)"}`);
+        const url = data.url || ("/cra/" + slug);
+        const commit = data.commit || "(unknown)";
+        setNotice("ok", `Published: ${url}\nCommit: ${commit}`);
+
         await loadPages();
-
-        // Scroll down to list like you asked
         document.querySelector(".listHeader").scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (e) {
-        setNotice("err", "Publish failed: " + e.message);
+        setNotice("err", "Publish failed: " + (e && e.message ? e.message : String(e)));
       } finally {
         $("publishBtn").disabled = false;
       }
     }
 
-    // -------- logout
-    async function logout() {
-      if (!window.netlifyIdentity) {
-        // fallback: send them to login page
-        window.location.href = "/admin/login.html";
-        return;
-      }
-      window.netlifyIdentity.logout();
-      // Identity logout can take a beat. Send them back to login.
-      setTimeout(() => window.location.href = "/admin/login.html", 250);
+    function clearForm() {
+      $("slug").value = "";
+      $("html").value = "";
+      $("overwrite").checked = false;
+      setNotice("", "");
     }
 
-    // -------- wire up
     $("publishBtn").addEventListener("click", publish);
+    $("clearBtn").addEventListener("click", clearForm);
     $("refreshBtn").addEventListener("click", loadPages);
-    $("logoutBtn").addEventListener("click", logout);
 
-    // boot
-    (async () => {
-      await initIdentity();
-      await loadPages();
-    })();
+    loadPages();
   </script>
-
-  <!-- If you already include this elsewhere you can remove it,
-       but including it here makes the "Authenticated as" and logout reliable -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </body>
 </html>
-
