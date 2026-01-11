@@ -1,5 +1,8 @@
 [build]
+  base = ""
   publish = "."
+  functions = "netlify/functions"
+
 
 [[redirects]]
   from = "/admin/*"
@@ -17,3 +20,4 @@
   for = "/admin/*"
   [headers.values]
     Cache-Control = "no-store, no-cache, must-revalidate, max-age=0"
+
