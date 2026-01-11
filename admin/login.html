@@ -3,13 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Catalyst Ridge Publisher</title>
+  <title>Catalyst Ridge Admin Login</title>
 
   <style>
     :root{
       --teal-900:#0E5E6F;
       --teal-700:#14788B;
-      --teal-100:#D7F1F4;
       --coral:#FF6B5A;
       --ink:#12313A;
       --muted:#6B7B83;
@@ -19,7 +18,6 @@
       --shadow: 0 20px 55px rgba(0,0,0,.25);
       --radius: 22px;
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -29,33 +27,22 @@
       background: radial-gradient(1200px 600px at 70% 20%, rgba(255,255,255,.20), rgba(255,255,255,0)),
                   linear-gradient(160deg, var(--bg1), var(--bg2));
       display:flex;
-      align-items:flex-start;
+      align-items:center;
       justify-content:center;
-      padding:28px 16px 60px;
+      padding:28px 16px;
     }
-
-    .wrap{width:min(980px, 100%)}
-
     .card{
+      width:min(720px, 100%);
       background:var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-
     .header{
       padding:22px 22px 14px;
       background: linear-gradient(90deg, var(--teal-900), rgba(20,120,139,.55));
       color:#fff;
     }
-
-    .headerRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-    }
-
     .title{
       font-size:28px;
       line-height:1.15;
@@ -68,95 +55,31 @@
       opacity:.9;
       font-size:14px;
     }
-
-    .authed{
-      font-size:13px;
-      opacity:.9;
-      text-align:right;
-      white-space:nowrap;
-    }
-
     .content{padding:18px 22px 22px}
-
-    label{
-      display:block;
-      font-weight:700;
-      margin:14px 0 8px;
-    }
-
-    input[type="text"]{
-      width:100%;
-      padding:14px 14px;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.15);
-      font-size:16px;
-      outline:none;
-    }
-
-    textarea{
-      width:100%;
-      min-height:220px;
-      padding:14px 14px;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.15);
-      font-size:14px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      outline:none;
-      resize:vertical;
-    }
-
-    .hint{
-      margin-top:6px;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .checkRow{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-top:12px;
-      padding:10px 12px;
-      border-radius:14px;
-      background: rgba(215,241,244,.55);
-      border: 1px solid rgba(14,94,111,.18);
-    }
-    .checkRow input{transform: scale(1.1)}
-    .checkRow span{
-      font-weight:700;
-      color: var(--ink);
-      font-size:14px;
-    }
-
-    .btnRow{
-      display:flex;
-      gap:14px;
-      margin-top:16px;
-      flex-wrap:wrap;
-    }
-
     .btn{
+      width:100%;
       border:none;
       cursor:pointer;
       font-weight:800;
       font-size:16px;
       padding:14px 16px;
       border-radius:14px;
-      min-width:220px;
+      background:var(--coral);
+      color:#fff;
+      margin-top:14px;
     }
-    .btn.primary{background:var(--teal-900); color:#fff}
-    .btn.danger{background:var(--coral); color:#fff}
     .btn.secondary{
       background:#F2F5F7;
       color:var(--ink);
       border:1px solid rgba(0,0,0,.12);
-      min-width:auto;
-      padding:10px 12px;
-      font-size:14px;
-      border-radius:12px;
+      margin-top:10px;
     }
-
-    .notice{
+    .note{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .status{
       margin-top:14px;
       padding:12px 12px;
       border-radius:14px;
@@ -165,363 +88,107 @@
       font-size:14px;
       color:var(--ink);
       white-space:pre-wrap;
+      display:none;
     }
-    .notice.ok{
+    .status.ok{
+      display:block;
       background: rgba(215,241,244,.65);
       border-color: rgba(14,94,111,.20);
     }
-    .notice.err{
+    .status.err{
+      display:block;
       background: rgba(255,107,90,.12);
       border-color: rgba(255,107,90,.30);
     }
-
-    hr.soft{
-      border:none;
-      height:1px;
-      background: rgba(0,0,0,.10);
-      margin:18px 0 14px;
+    code{
+      background: rgba(0,0,0,.06);
+      padding:2px 6px;
+      border-radius:8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
     }
-
-    .listHeader{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-top:6px;
-    }
-    .listHeader h3{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.2px;
-    }
-
-    .list{
-      margin-top:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.10);
-      background:#fff;
-    }
-
-    .rowName{
-      font-weight:800;
-      font-size:16px;
-      color:var(--ink);
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      padding-right:8px;
-      max-width:60%;
-    }
-
-    .rowActions{
-      display:flex;
-      gap:10px;
-      flex-shrink:0;
-      align-items:center;
-    }
-
-    a.viewBtn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      text-decoration:none;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(0,0,0,.18);
-      background:#fff;
-      color:var(--ink);
-      font-weight:800;
-      font-size:14px;
-      min-width:110px;
-    }
-
-    button.trash{
-      width:44px;
-      height:44px;
-      border-radius:12px;
-      border:1px solid rgba(255,107,90,.55);
-      background:#fff;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    button.trash:hover{background: rgba(255,107,90,.08)}
-    .trash svg{width:18px; height:18px; fill: var(--coral)}
-
-    .muted{color:var(--muted); font-size:13px}
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="header">
-        <div class="headerRow">
-          <div>
-            <h1 class="title">Catalyst Ridge Publisher</h1>
-            <p class="subtitle">Paste HTML, choose a slug, publish to <b>/cra/slug/</b>.</p>
-          </div>
-          <div class="authed">
-            <div id="authedAs">Authenticated as: …</div>
-          </div>
-        </div>
+  <div class="card">
+    <div class="header">
+      <h1 class="title">Catalyst Ridge Admin</h1>
+      <p class="subtitle">Log in to access internal tools.</p>
+    </div>
+
+    <div class="content">
+      <button id="loginBtn" class="btn" type="button">Log in</button>
+      <button id="goPublisherBtn" class="btn secondary" type="button">Go to Publisher</button>
+
+      <div class="note">
+        Access is invite only. If you are not an invited user, you will not be able to create an account.
       </div>
 
-      <div class="content">
-        <label for="slug">Slug</label>
-        <input id="slug" type="text" placeholder="ai-test" autocomplete="off" />
-        <div class="hint">Lowercase letters and numbers, single dashes, no spaces.</div>
-
-        <label for="html">HTML</label>
-        <textarea id="html" placeholder="&lt;h1&gt;Hello&lt;/h1&gt;"></textarea>
-
-        <div class="checkRow">
-          <input id="overwrite" type="checkbox" />
-          <span>Overwrite if this slug already exists</span>
-        </div>
-
-        <div class="hint">Will publish as: <b>/cra/&lt;slug&gt;/index.html</b></div>
-
-        <div class="btnRow">
-          <button id="publishBtn" class="btn primary" type="button">Publish</button>
-          <button id="logoutBtn" class="btn danger" type="button">Log out</button>
-        </div>
-
-        <div id="result" class="notice" style="display:none;"></div>
-
-        <hr class="soft" />
-
-        <div class="listHeader">
-          <h3>Published pages</h3>
-          <button id="refreshBtn" class="btn secondary" type="button">Refresh</button>
-        </div>
-        <div id="listStatus" class="muted">Loading…</div>
-        <div id="list" class="list"></div>
-      </div>
+      <div id="status" class="status"></div>
     </div>
   </div>
 
-  <script>
-    // -------- helpers
-    const $ = (id) => document.getElementById(id);
-
-    function setNotice(type, msg) {
-      const el = $("result");
-      el.style.display = "block";
-      el.className = "notice " + (type === "ok" ? "ok" : type === "err" ? "err" : "");
-      el.textContent = msg;
-    }
-
-    function normalizeSlug(raw) {
-      return (raw || "")
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9-]/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-    }
-
-    function trashIcon() {
-      return `
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v10h-2V9zm4 0h2v10h-2V9zM7 9h2v10H7V9z"/>
-        </svg>
-      `;
-    }
-
-    // -------- auth display (Netlify Identity)
-    async function initIdentity() {
-      // Identity widget script is usually loaded in login.html, but this page can still use the API if it exists.
-      // If netlifyIdentity isn't present, we just skip the "authed as" line.
-      if (!window.netlifyIdentity) {
-        $("authedAs").textContent = "Authenticated as: (identity not loaded)";
-        return;
-      }
-
-      const user = window.netlifyIdentity.currentUser();
-      $("authedAs").textContent = user && user.email ? `Authenticated as: ${user.email}` : "Authenticated as: (unknown)";
-
-      // Keep updated if user changes
-      window.netlifyIdentity.on("login", (u) => {
-        $("authedAs").textContent = u && u.email ? `Authenticated as: ${u.email}` : "Authenticated as: (unknown)";
-      });
-      window.netlifyIdentity.on("logout", () => {
-        $("authedAs").textContent = "Authenticated as: (logged out)";
-      });
-    }
-
-    // -------- list pages
-    async function loadPages() {
-      $("listStatus").textContent = "Loading…";
-      $("list").innerHTML = "";
-
-      let res, data;
-      try {
-        res = await fetch("/.netlify/functions/list_pages", { method: "GET", credentials: "include" });
-        data = await res.json();
-      } catch (e) {
-        $("listStatus").textContent = "Could not load list.";
-        setNotice("err", "List failed: " + e.message);
-        return;
-      }
-
-      if (!data || !data.ok) {
-        $("listStatus").textContent = "List unavailable.";
-        setNotice("err", "List failed: " + (data && data.error ? data.error : "Unknown error"));
-        return;
-      }
-
-      const pages = Array.isArray(data.pages) ? data.pages : [];
-      if (pages.length === 0) {
-        $("listStatus").textContent = "No pages yet.";
-        return;
-      }
-
-      $("listStatus").textContent = "";
-
-      for (const p of pages) {
-        const slug = p.slug || "";
-        const url = p.url || ("/cra/" + slug + "/");
-
-        const row = document.createElement("div");
-        row.className = "row";
-
-        const name = document.createElement("div");
-        name.className = "rowName";
-        name.textContent = slug;
-
-        const actions = document.createElement("div");
-        actions.className = "rowActions";
-
-        const view = document.createElement("a");
-        view.className = "viewBtn";
-        view.href = url;
-        view.target = "_blank";
-        view.rel = "noopener";
-        view.textContent = "View Page";
-
-        const del = document.createElement("button");
-        del.className = "trash";
-        del.type = "button";
-        del.innerHTML = trashIcon();
-        del.title = "Delete";
-        del.addEventListener("click", async () => {
-          const ok = confirm(`Delete /cra/${slug}/ ? This cannot be undone.`);
-          if (!ok) return;
-
-          del.disabled = true;
-          try {
-            const r = await fetch("/.netlify/functions/delete_page", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-              body: JSON.stringify({ slug })
-            });
-            const j = await r.json();
-            if (!j.ok) throw new Error(j.error || "Delete failed");
-            setNotice("ok", `Deleted: /cra/${slug}/`);
-            await loadPages();
-          } catch (e) {
-            setNotice("err", "Delete failed: " + e.message);
-          } finally {
-            del.disabled = false;
-          }
-        });
-
-        actions.appendChild(view);
-        actions.appendChild(del);
-
-        row.appendChild(name);
-        row.appendChild(actions);
-
-        $("list").appendChild(row);
-      }
-    }
-
-    // -------- publish
-    async function publish() {
-      const slug = normalizeSlug($("slug").value);
-      $("slug").value = slug;
-
-      if (!slug) {
-        setNotice("err", "Please enter a slug.");
-        return;
-      }
-
-      const html = $("html").value || "";
-      if (!html.trim()) {
-        setNotice("err", "Please paste HTML.");
-        return;
-      }
-
-      const overwrite = $("overwrite").checked;
-
-      $("publishBtn").disabled = true;
-      setNotice("", "Publishing…");
-
-      try {
-        const res = await fetch("/.netlify/functions/publish", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ slug, html, overwrite })
-        });
-
-        const data = await res.json();
-        if (!data.ok) throw new Error(data.error || "Publish failed");
-
-        setNotice("ok", `Published: ${data.url}\nCommit: ${data.commit || "(unknown)"}`);
-        await loadPages();
-
-        // Scroll down to list like you asked
-        document.querySelector(".listHeader").scrollIntoView({ behavior: "smooth", block: "start" });
-      } catch (e) {
-        setNotice("err", "Publish failed: " + e.message);
-      } finally {
-        $("publishBtn").disabled = false;
-      }
-    }
-
-    // -------- logout
-    async function logout() {
-      if (!window.netlifyIdentity) {
-        // fallback: send them to login page
-        window.location.href = "/admin/login.html";
-        return;
-      }
-      window.netlifyIdentity.logout();
-      // Identity logout can take a beat. Send them back to login.
-      setTimeout(() => window.location.href = "/admin/login.html", 250);
-    }
-
-    // -------- wire up
-    $("publishBtn").addEventListener("click", publish);
-    $("refreshBtn").addEventListener("click", loadPages);
-    $("logoutBtn").addEventListener("click", logout);
-
-    // boot
-    (async () => {
-      await initIdentity();
-      await loadPages();
-    })();
-  </script>
-
-  <!-- If you already include this elsewhere you can remove it,
-       but including it here makes the "Authenticated as" and logout reliable -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const loginBtn = document.getElementById("loginBtn");
+    const goPublisherBtn = document.getElementById("goPublisherBtn");
+
+    function setStatus(type, msg) {
+      statusEl.className = "status " + (type || "");
+      statusEl.textContent = msg;
+    }
+
+    function goPublisher() {
+      // Use trailing slash to avoid "index.html not reliable" behavior
+      window.location.href = "/admin/publisher/";
+    }
+
+    function boot() {
+      if (!window.netlifyIdentity) {
+        setStatus("err", "Netlify Identity widget did not load.");
+        return;
+      }
+
+      // Initialize identity
+      window.netlifyIdentity.init();
+
+      // If already logged in, go straight to publisher
+      const user = window.netlifyIdentity.currentUser();
+      if (user) {
+        setStatus("ok", "You are already logged in. Redirecting to Publisher…");
+        setTimeout(goPublisher, 250);
+        return;
+      }
+
+      // Button opens the Identity modal
+      loginBtn.addEventListener("click", () => {
+        setStatus("", "");
+        window.netlifyIdentity.open("login");
+      });
+
+      goPublisherBtn.addEventListener("click", () => {
+        goPublisher();
+      });
+
+      // When login completes, redirect
+      window.netlifyIdentity.on("login", () => {
+        setStatus("ok", "Logged in. Redirecting to Publisher…");
+        // Close modal then redirect
+        window.netlifyIdentity.close();
+        setTimeout(goPublisher, 250);
+      });
+
+      // Optional: show errors a little more clearly
+      window.netlifyIdentity.on("error", (err) => {
+        setStatus("err", err && err.message ? err.message : "Login error.");
+      });
+    }
+
+    boot();
+  </script>
 </body>
 </html>
-
 
