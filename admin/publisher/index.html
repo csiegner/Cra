@@ -5,244 +5,521 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Catalyst Ridge Publisher</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/netlify-identity-widget@1/build/netlify-identity-widget.min.js"></script>
-
   <style>
-    body{
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: radial-gradient(circle at 20% 10%, rgba(255,107,90,.22), transparent 50%),
-                  radial-gradient(circle at 80% 85%, rgba(168,218,220,.33), transparent 55%),
-                  linear-gradient(135deg, #0E5E6F, #1CA7A6);
-      padding: 22px;
+    :root{
+      --teal-900:#0E5E6F;
+      --teal-700:#14788B;
+      --teal-100:#D7F1F4;
+      --coral:#FF6B5A;
+      --ink:#12313A;
+      --muted:#6B7B83;
+      --card:#ffffff;
+      --bg1:#0E5E6F;
+      --bg2:#17A2B8;
+      --shadow: 0 20px 55px rgba(0,0,0,.25);
+      --radius: 22px;
     }
-    .shell{
-      width:100%;
-      max-width:980px;
-      background:#fff;
-      border-radius:18px;
-      box-shadow:0 24px 60px rgba(0,0,0,.18);
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--ink);
+      min-height:100vh;
+      background: radial-gradient(1200px 600px at 70% 20%, rgba(255,255,255,.20), rgba(255,255,255,0)),
+                  linear-gradient(160deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:28px 16px 60px;
+    }
+
+    .wrap{width:min(980px, 100%)}
+
+    .card{
+      background:var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .hdr{
-      padding:18px 22px;
-      background: rgba(14,94,111,0.06);
+
+    .header{
+      padding:22px 22px 14px;
+      background: linear-gradient(90deg, var(--teal-900), rgba(20,120,139,.55));
+      color:#fff;
+    }
+
+    .headerRow{
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
-      gap: 12px;
+      gap:12px;
     }
-    .hdr h1{
+
+    .title{
+      font-size:28px;
+      line-height:1.15;
+      margin:0 0 6px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
       margin:0;
-      color:#0E5E6F;
-      font-size:24px;
-    }
-    .hdr .sub{
-      margin-top:6px;
-      color:#445;
+      opacity:.9;
       font-size:14px;
     }
-    .who{
-      text-align:right;
-      color:#445;
+
+    .authed{
       font-size:13px;
-      margin-top:6px;
+      opacity:.9;
+      text-align:right;
       white-space:nowrap;
     }
-    .body{
-      padding:18px 22px 22px 22px;
-    }
+
+    .content{padding:18px 22px 22px}
+
     label{
       display:block;
-      margin-top:14px;
       font-weight:700;
-      color:#223;
+      margin:14px 0 8px;
     }
-    input, textarea{
+
+    input[type="text"]{
       width:100%;
-      margin-top:8px;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid rgba(0,0,0,.18);
-      font-size:14px;
+      padding:14px 14px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.15);
+      font-size:16px;
       outline:none;
     }
+
     textarea{
-      min-height:280px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      width:100%;
+      min-height:220px;
+      padding:14px 14px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.15);
+      font-size:14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      outline:none;
+      resize:vertical;
     }
-    .help{
+
+    .hint{
       margin-top:6px;
-      color:#667;
       font-size:13px;
+      color:var(--muted);
     }
-    .row{
+
+    .checkRow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      background: rgba(215,241,244,.55);
+      border: 1px solid rgba(14,94,111,.18);
+    }
+    .checkRow input{transform: scale(1.1)}
+    .checkRow span{
+      font-weight:700;
+      color: var(--ink);
+      font-size:14px;
+    }
+
+    .btnRow{
       display:flex;
       gap:14px;
-      margin-top:18px;
+      margin-top:16px;
       flex-wrap:wrap;
     }
+
     .btn{
-      flex: 1 1 260px;
-      border:0;
-      border-radius:14px;
-      padding:14px 14px;
+      border:none;
+      cursor:pointer;
       font-weight:800;
       font-size:16px;
-      cursor:pointer;
-    }
-    .primary{ background:#0E5E6F; color:#fff; }
-    .danger{ background:#FF6B5A; color:#fff; }
-    .btn:disabled{ opacity:.65; cursor:not-allowed; }
-    .status{
-      margin-top:16px;
       padding:14px 16px;
       border-radius:14px;
-      background: rgba(14,94,111,0.06);
-      color:#0E5E6F;
-      font-weight:700;
-      line-height:1.35;
+      min-width:220px;
     }
-    .status.err{
-      background: rgba(176,0,32,0.08);
-      color:#B00020;
+    .btn.primary{background:var(--teal-900); color:#fff}
+    .btn.danger{background:var(--coral); color:#fff}
+    .btn.secondary{
+      background:#F2F5F7;
+      color:var(--ink);
+      border:1px solid rgba(0,0,0,.12);
+      min-width:auto;
+      padding:10px 12px;
+      font-size:14px;
+      border-radius:12px;
     }
-    code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    a{ color:#0E5E6F; }
+
+    .notice{
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:14px;
+      background:#F2F5F7;
+      border:1px solid rgba(0,0,0,.10);
+      font-size:14px;
+      color:var(--ink);
+      white-space:pre-wrap;
+    }
+    .notice.ok{
+      background: rgba(215,241,244,.65);
+      border-color: rgba(14,94,111,.20);
+    }
+    .notice.err{
+      background: rgba(255,107,90,.12);
+      border-color: rgba(255,107,90,.30);
+    }
+
+    hr.soft{
+      border:none;
+      height:1px;
+      background: rgba(0,0,0,.10);
+      margin:18px 0 14px;
+    }
+
+    .listHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:6px;
+    }
+    .listHeader h3{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+
+    .list{
+      margin-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+    }
+
+    .rowName{
+      font-weight:800;
+      font-size:16px;
+      color:var(--ink);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      padding-right:8px;
+      max-width:60%;
+    }
+
+    .rowActions{
+      display:flex;
+      gap:10px;
+      flex-shrink:0;
+      align-items:center;
+    }
+
+    a.viewBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.18);
+      background:#fff;
+      color:var(--ink);
+      font-weight:800;
+      font-size:14px;
+      min-width:110px;
+    }
+
+    button.trash{
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      border:1px solid rgba(255,107,90,.55);
+      background:#fff;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    button.trash:hover{background: rgba(255,107,90,.08)}
+    .trash svg{width:18px; height:18px; fill: var(--coral)}
+
+    .muted{color:var(--muted); font-size:13px}
   </style>
 </head>
+
 <body>
-  <div class="shell">
-    <div class="hdr">
-      <div>
-        <h1>Catalyst Ridge Publisher</h1>
-        <div class="sub">Paste HTML, choose a slug, publish to <strong>/cra/slug/</strong>.</div>
-      </div>
-      <div class="who" id="who">Checking auth...</div>
-    </div>
-
-    <div class="body">
-      <label for="slug">Slug</label>
-      <input id="slug" placeholder="ai-test" autocomplete="off" />
-      <div class="help">Lowercase letters, numbers, single dashes. No spaces.</div>
-
-      <label for="html">HTML</label>
-      <textarea id="html" placeholder="<h1>AI Snapshot</h1>"></textarea>
-
-      <div class="help">We will publish as: <code>/cra/&lt;slug&gt;/</code> (stored in GitHub as <code>cra/&lt;slug&gt;/index.html</code>).</div>
-
-      <div class="row">
-        <button class="btn primary" id="publishBtn">Publish</button>
-        <button class="btn danger" id="logoutBtn">Log out</button>
+  <div class="wrap">
+    <div class="card">
+      <div class="header">
+        <div class="headerRow">
+          <div>
+            <h1 class="title">Catalyst Ridge Publisher</h1>
+            <p class="subtitle">Paste HTML, choose a slug, publish to <b>/cra/slug/</b>.</p>
+          </div>
+          <div class="authed">
+            <div id="authedAs">Authenticated as: …</div>
+          </div>
+        </div>
       </div>
 
-      <div id="status" class="status">Ready.</div>
+      <div class="content">
+        <label for="slug">Slug</label>
+        <input id="slug" type="text" placeholder="ai-test" autocomplete="off" />
+        <div class="hint">Lowercase letters and numbers, single dashes, no spaces.</div>
+
+        <label for="html">HTML</label>
+        <textarea id="html" placeholder="&lt;h1&gt;Hello&lt;/h1&gt;"></textarea>
+
+        <div class="checkRow">
+          <input id="overwrite" type="checkbox" />
+          <span>Overwrite if this slug already exists</span>
+        </div>
+
+        <div class="hint">Will publish as: <b>/cra/&lt;slug&gt;/index.html</b></div>
+
+        <div class="btnRow">
+          <button id="publishBtn" class="btn primary" type="button">Publish</button>
+          <button id="logoutBtn" class="btn danger" type="button">Log out</button>
+        </div>
+
+        <div id="result" class="notice" style="display:none;"></div>
+
+        <hr class="soft" />
+
+        <div class="listHeader">
+          <h3>Published pages</h3>
+          <button id="refreshBtn" class="btn secondary" type="button">Refresh</button>
+        </div>
+        <div id="listStatus" class="muted">Loading…</div>
+        <div id="list" class="list"></div>
+      </div>
     </div>
   </div>
 
   <script>
-    const whoEl = document.getElementById("who");
-    const statusEl = document.getElementById("status");
-    const publishBtn = document.getElementById("publishBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
+    // -------- helpers
+    const $ = (id) => document.getElementById(id);
 
-    function setStatus(msg, isError=false) {
-      statusEl.className = "status" + (isError ? " err" : "");
-      statusEl.innerHTML = msg;
+    function setNotice(type, msg) {
+      const el = $("result");
+      el.style.display = "block";
+      el.className = "notice " + (type === "ok" ? "ok" : type === "err" ? "err" : "");
+      el.textContent = msg;
     }
 
-    function sanitizeSlug(input) {
-      return (input || "")
-        .toLowerCase()
+    function normalizeSlug(raw) {
+      return (raw || "")
         .trim()
+        .toLowerCase()
         .replace(/[^a-z0-9-]/g, "-")
         .replace(/-+/g, "-")
-        .replace(/^-+|-+$/g, "");
+        .replace(/^-|-$/g, "");
     }
 
-    if (!window.netlifyIdentity) {
-      setStatus("Netlify Identity widget failed to load.", true);
-    } else {
-      netlifyIdentity.on("init", user => {
-        if (!user) {
-          // Not logged in, go to login page
-          window.location.href = "/admin/login.html";
-          return;
-        }
-        const email = user.email || "(unknown)";
-        whoEl.textContent = "Authenticated as " + email;
-        setStatus("Ready.");
+    function trashIcon() {
+      return `
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v10h-2V9zm4 0h2v10h-2V9zM7 9h2v10H7V9z"/>
+        </svg>
+      `;
+    }
+
+    // -------- auth display (Netlify Identity)
+    async function initIdentity() {
+      // Identity widget script is usually loaded in login.html, but this page can still use the API if it exists.
+      // If netlifyIdentity isn't present, we just skip the "authed as" line.
+      if (!window.netlifyIdentity) {
+        $("authedAs").textContent = "Authenticated as: (identity not loaded)";
+        return;
+      }
+
+      const user = window.netlifyIdentity.currentUser();
+      $("authedAs").textContent = user && user.email ? `Authenticated as: ${user.email}` : "Authenticated as: (unknown)";
+
+      // Keep updated if user changes
+      window.netlifyIdentity.on("login", (u) => {
+        $("authedAs").textContent = u && u.email ? `Authenticated as: ${u.email}` : "Authenticated as: (unknown)";
       });
-
-      netlifyIdentity.on("error", err => {
-        setStatus(err && err.message ? err.message : "Auth error.", true);
+      window.netlifyIdentity.on("logout", () => {
+        $("authedAs").textContent = "Authenticated as: (logged out)";
       });
+    }
 
-      logoutBtn.addEventListener("click", () => {
-        setStatus("Logging out...");
-        netlifyIdentity.logout();
-        // On logout, go back to login page
-        netlifyIdentity.on("logout", () => {
-          window.location.href = "/admin/login.html";
-        });
-      });
+    // -------- list pages
+    async function loadPages() {
+      $("listStatus").textContent = "Loading…";
+      $("list").innerHTML = "";
 
-      publishBtn.addEventListener("click", async () => {
-        const slugRaw = document.getElementById("slug").value;
-        const slug = sanitizeSlug(slugRaw);
-        const html = (document.getElementById("html").value || "").trim();
+      let res, data;
+      try {
+        res = await fetch("/.netlify/functions/list_pages", { method: "GET", credentials: "include" });
+        data = await res.json();
+      } catch (e) {
+        $("listStatus").textContent = "Could not load list.";
+        setNotice("err", "List failed: " + e.message);
+        return;
+      }
 
-        document.getElementById("slug").value = slug;
+      if (!data || !data.ok) {
+        $("listStatus").textContent = "List unavailable.";
+        setNotice("err", "List failed: " + (data && data.error ? data.error : "Unknown error"));
+        return;
+      }
 
-        if (!slug) {
-          setStatus("Slug is required.", true);
-          return;
-        }
-        if (!html) {
-          setStatus("HTML is required.", true);
-          return;
-        }
+      const pages = Array.isArray(data.pages) ? data.pages : [];
+      if (pages.length === 0) {
+        $("listStatus").textContent = "No pages yet.";
+        return;
+      }
 
-        publishBtn.disabled = true;
-        publishBtn.textContent = "Publishing...";
-        setStatus("Publishing...");
+      $("listStatus").textContent = "";
 
-        try {
-          const res = await fetch("/.netlify/functions/publish", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ slug, html })
-          });
+      for (const p of pages) {
+        const slug = p.slug || "";
+        const url = p.url || ("/cra/" + slug + "/");
 
-          const json = await res.json();
+        const row = document.createElement("div");
+        row.className = "row";
 
-          if (!json.ok) {
-            throw new Error(json.error || "Publish failed.");
+        const name = document.createElement("div");
+        name.className = "rowName";
+        name.textContent = slug;
+
+        const actions = document.createElement("div");
+        actions.className = "rowActions";
+
+        const view = document.createElement("a");
+        view.className = "viewBtn";
+        view.href = url;
+        view.target = "_blank";
+        view.rel = "noopener";
+        view.textContent = "View Page";
+
+        const del = document.createElement("button");
+        del.className = "trash";
+        del.type = "button";
+        del.innerHTML = trashIcon();
+        del.title = "Delete";
+        del.addEventListener("click", async () => {
+          const ok = confirm(`Delete /cra/${slug}/ ? This cannot be undone.`);
+          if (!ok) return;
+
+          del.disabled = true;
+          try {
+            const r = await fetch("/.netlify/functions/delete_page", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ slug })
+            });
+            const j = await r.json();
+            if (!j.ok) throw new Error(j.error || "Delete failed");
+            setNotice("ok", `Deleted: /cra/${slug}/`);
+            await loadPages();
+          } catch (e) {
+            setNotice("err", "Delete failed: " + e.message);
+          } finally {
+            del.disabled = false;
           }
+        });
 
-          const fullUrl = json.url || ("/cra/" + slug + "/");
+        actions.appendChild(view);
+        actions.appendChild(del);
 
-          setStatus(
-            `Published: <a href="${fullUrl}" target="_blank">${fullUrl}</a><br>` +
-            `Commit: <code>${json.commit || "(no sha returned)"}</code><br>` +
-            `Path: <code>${json.path || "(no path returned)"}</code>`
-          );
-        } catch (e) {
-          setStatus("Error: " + (e.message || "Unknown error"), true);
-        } finally {
-          publishBtn.disabled = false;
-          publishBtn.textContent = "Publish";
-        }
-      });
+        row.appendChild(name);
+        row.appendChild(actions);
 
-      netlifyIdentity.init();
+        $("list").appendChild(row);
+      }
     }
+
+    // -------- publish
+    async function publish() {
+      const slug = normalizeSlug($("slug").value);
+      $("slug").value = slug;
+
+      if (!slug) {
+        setNotice("err", "Please enter a slug.");
+        return;
+      }
+
+      const html = $("html").value || "";
+      if (!html.trim()) {
+        setNotice("err", "Please paste HTML.");
+        return;
+      }
+
+      const overwrite = $("overwrite").checked;
+
+      $("publishBtn").disabled = true;
+      setNotice("", "Publishing…");
+
+      try {
+        const res = await fetch("/.netlify/functions/publish", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ slug, html, overwrite })
+        });
+
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || "Publish failed");
+
+        setNotice("ok", `Published: ${data.url}\nCommit: ${data.commit || "(unknown)"}`);
+        await loadPages();
+
+        // Scroll down to list like you asked
+        document.querySelector(".listHeader").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (e) {
+        setNotice("err", "Publish failed: " + e.message);
+      } finally {
+        $("publishBtn").disabled = false;
+      }
+    }
+
+    // -------- logout
+    async function logout() {
+      if (!window.netlifyIdentity) {
+        // fallback: send them to login page
+        window.location.href = "/admin/login.html";
+        return;
+      }
+      window.netlifyIdentity.logout();
+      // Identity logout can take a beat. Send them back to login.
+      setTimeout(() => window.location.href = "/admin/login.html", 250);
+    }
+
+    // -------- wire up
+    $("publishBtn").addEventListener("click", publish);
+    $("refreshBtn").addEventListener("click", loadPages);
+    $("logoutBtn").addEventListener("click", logout);
+
+    // boot
+    (async () => {
+      await initIdentity();
+      await loadPages();
+    })();
   </script>
+
+  <!-- If you already include this elsewhere you can remove it,
+       but including it here makes the "Authenticated as" and logout reliable -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </body>
 </html>
-
-
