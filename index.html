@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CRA Publisher Bootstrap</title>
+
+  <!-- Netlify Identity -->
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body style="font-family:system-ui;padding:32px;">
+  <h1>CRA Publisher</h1>
+  <p>Bootstrap page for Netlify Identity.</p>
+
+  <button id="login">Log in</button>
+
+  <script>
+    document.getElementById("login").addEventListener("click", () => {
+      if (window.netlifyIdentity) window.netlifyIdentity.open();
+    });
+
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("login", () => {
+        alert("Logged in successfully");
+      });
+    }
+  </script>
+</body>
+</html>
