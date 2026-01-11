@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Catalyst Ridge Publisher</title>
 
-  <!-- Netlify Identity -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <style>
@@ -18,27 +17,16 @@
       align-items: center;
       justify-content: center;
     }
-
     .card {
       background: #ffffff;
       border-radius: 16px;
       padding: 24px;
-      max-width: 420px;
-      width: 100%;
+      max-width: 520px;
+      width: calc(100% - 32px);
       box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     }
-
-    h1 {
-      margin-top: 0;
-      color: #0e5e6f;
-      font-size: 22px;
-    }
-
-    p {
-      color: #444;
-      line-height: 1.5;
-    }
-
+    h1 { margin: 0 0 10px; color: #0e5e6f; font-size: 26px; }
+    p { color: #2e3a46; line-height: 1.5; margin: 0 0 14px; }
     button {
       width: 100%;
       padding: 12px;
@@ -47,85 +35,119 @@
       cursor: pointer;
       font-size: 16px;
       margin-top: 12px;
+      font-weight: 700;
     }
-
-    .logout {
-      background: #ff6b5a;
-      color: #fff;
-    }
-
-    .publish {
-      background: #0e5e6f;
-      color: #fff;
-    }
-
+    .logout { background: #ff6b5a; color: #fff; }
+    .publish { background: #0e5e6f; color: #fff; }
     .status {
-      margin-top: 12px;
+      margin-top: 14px;
       font-size: 14px;
-      color: #666;
+      color: #2e3a46;
+      opacity: .85;
+      word-break: break-word;
     }
+    .small { font-size: 12px; opacity: .75; margin-top: 8px; }
   </style>
 </head>
 
 <body>
   <div class="card">
     <h1>Catalyst Ridge Publisher</h1>
-    <p>You are logged in. This page confirms admin access.</p>
+    <p id="msg">Checking session…</p>
 
-    <button class="publish" id="publishBtn">
-      Publish page (coming next)
-    </button>
-
-    <button class="logout" id="logoutBtn">
-      Log out
-    </button>
+    <button class="publish" id="publishBtn" type="button">Publish page (coming next)</button>
+    <button class="logout" id="logoutBtn" type="button">Log out</button>
 
     <div class="status" id="status"></div>
+    <div class="small" id="debug"></div>
   </div>
 
   <script>
+    const msgEl = document.getElementById("msg");
     const statusEl = document.getElementById("status");
+    const debugEl = document.getElementById("debug");
     const logoutBtn = document.getElementById("logoutBtn");
 
-    function setStatus(msg) {
-      statusEl.textContent = msg;
+    function setMsg(t){ msgEl.textContent = t; }
+    function setStatus(t){ statusEl.textContent = t; }
+    function setDebug(t){ debugEl.textContent = t; }
+
+    function clearAllIdentityStorage(){
+      const keys = [
+        "netlify.auth.user",
+        "netlify.auth.token",
+        "nf_jwt",
+        "gotrue.user",
+        "gotrue.token",
+        "gotrue.state",
+        "gotrue.code_verifier",
+        "gotrue.pkce_code_verifier"
+      ];
+      keys.forEach(k => {
+        try { localStorage.removeItem(k); } catch(e){}
+        try { sessionStorage.removeItem(k); } catch(e){}
+      });
+
+      // Also clear any key that starts with "gotrue"
+      try {
+        Object.keys(localStorage).forEach(k => { if (k.toLowerCase().startsWith("gotrue")) localStorage.removeItem(k); });
+      } catch(e){}
+      try {
+        Object.keys(sessionStorage).forEach(k => { if (k.toLowerCase().startsWith("gotrue")) sessionStorage.removeItem(k); });
+      } catch(e){}
     }
 
-    function forceClearIdentity() {
-      try { localStorage.removeItem("netlify.auth.user"); } catch(e){}
-      try { sessionStorage.clear(); } catch(e){}
-    }
+    async function init(){
+      if (!window.netlifyIdentity){
+        setMsg("Netlify Identity failed to load.");
+        setStatus("Check that the identity widget script is reachable.");
+        return;
+      }
 
-    function initIdentity() {
-      if (!window.netlifyIdentity) {
-        setStatus("Netlify Identity not loaded.");
+      // If we just logged out, do not bounce back in the same tab
+      if (sessionStorage.getItem("cra_logged_out") === "1") {
+        setMsg("Logged out.");
+        setStatus("You can close this tab or go to /admin/login.html to log back in.");
+        sessionStorage.removeItem("cra_logged_out");
         return;
       }
 
       window.netlifyIdentity.init();
 
       const user = window.netlifyIdentity.currentUser();
-      if (!user) {
+      if (!user){
+        setMsg("Not logged in. Sending you to login…");
         window.location.href = "/admin/login.html";
         return;
       }
 
+      setMsg("You are logged in. This page confirms admin access.");
       setStatus("Authenticated as " + user.email);
-
-      logoutBtn.addEventListener("click", () => {
-        try {
-          window.netlifyIdentity.logout();
-        } catch(e) {
-          console.log(e);
-        } finally {
-          forceClearIdentity();
-          window.location.href = "/admin/login.html";
-        }
-      });
+      setDebug("User id: " + (user.id || "n/a"));
     }
 
-    window.addEventListener("load", initIdentity);
+    logoutBtn.addEventListener("click", async () => {
+      setMsg("Logging out…");
+      setStatus("");
+
+      try{
+        if (window.netlifyIdentity){
+          // Logout can be async, give it time to complete
+          await window.netlifyIdentity.logout();
+        }
+      } catch(e){
+        // Ignore and still clear storage
+      } finally {
+        clearAllIdentityStorage();
+        sessionStorage.setItem("cra_logged_out", "1");
+        // Force a true reload so cached identity state cannot rehydrate
+        window.location.href = "/admin/login.html?logged_out=1";
+      }
+    });
+
+    window.addEventListener("load", init);
   </script>
 </body>
 </html>
+
 
