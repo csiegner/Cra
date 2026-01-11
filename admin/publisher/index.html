@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Catalyst Ridge Advisory · HTML Publisher</title>
 
-  <!-- Montserrat for CRA feel -->
+  <!-- Brand font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Catalyst Ridge Advisory brand */
+      /* Catalyst Ridge Advisory palette */
       --teal: #0E5E6F;
       --teal-dark: #0B4B59;
       --coral: #FF6B5A;
@@ -45,6 +45,7 @@
         radial-gradient(900px 600px at 90% 15%, rgba(255,107,90,0.22), transparent 55%),
         linear-gradient(135deg, rgba(14,94,111,0.10), rgba(168,218,220,0.18)),
         var(--white);
+      min-height: 100vh;
     }
 
     .container {
@@ -52,7 +53,6 @@
       margin: 0 auto;
     }
 
-    /* Header */
     header {
       display: flex;
       align-items: center;
@@ -67,12 +67,10 @@
       gap: 14px;
     }
 
-    /* Optional logo image
-       If you add a logo later, drop it in admin/publisher/logo.svg
-    */
     .brand img {
-      height: 38px;
+      height: 40px;
       width: auto;
+      display: block;
     }
 
     .brand-text {
@@ -97,7 +95,7 @@
 
     h1 {
       font-family: var(--heading);
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 900;
       margin: 0;
       color: var(--teal-dark);
@@ -124,14 +122,16 @@
       display: grid;
       grid-template-columns: 1fr 1.15fr;
       gap: 16px;
+      margin-top: 14px;
     }
 
     @media (max-width: 900px) {
+      body { padding: 18px; }
       .grid { grid-template-columns: 1fr; }
     }
 
     .card {
-      background: rgba(248,249,250,0.88);
+      background: rgba(248,249,250,0.90);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 18px;
@@ -167,7 +167,7 @@
 
     textarea {
       width: 100%;
-      min-height: 400px;
+      min-height: 420px;
       padding: 12px;
       border-radius: var(--radius-md);
       border: 1px solid rgba(46,58,70,0.22);
@@ -215,6 +215,8 @@
       box-shadow: var(--shadow-md);
     }
 
+    button:active { transform: translateY(1px); }
+
     button.primary {
       border-color: rgba(14,94,111,0.55);
       background: linear-gradient(135deg, rgba(14,94,111,0.14), rgba(168,218,220,0.36));
@@ -257,10 +259,24 @@
       font-weight: 700;
     }
 
+    .notice.info {
+      color: rgba(46,58,70,0.75);
+    }
+
     .mutedHint {
       margin-top: 10px;
       font-size: 13px;
       color: rgba(46,58,70,0.70);
+    }
+
+    .section-gap { height: 16px; }
+
+    .listHeader {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
     .listHeader h2 {
@@ -270,6 +286,90 @@
       color: var(--teal);
       margin: 0;
     }
+
+    #listStatus {
+      font-size: 13px;
+      color: rgba(46,58,70,0.72);
+      margin-top: 6px;
+    }
+
+    .listWrap {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(46,58,70,0.16);
+      background: rgba(248,249,250,0.94);
+      box-shadow: 0 10px 26px rgba(16,32,39,0.08);
+    }
+
+    .rowName {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--ink);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 62%;
+      font-weight: 700;
+    }
+
+    .rowActions {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    a.viewBtn {
+      color: var(--teal-dark);
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(14,94,111,0.22);
+      background: rgba(168,218,220,0.22);
+    }
+
+    a.viewBtn:hover {
+      border-color: rgba(14,94,111,0.40);
+      background: rgba(168,218,220,0.30);
+    }
+
+    .trash {
+      width: 44px;
+      height: 38px;
+      padding: 0;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .trash.danger {
+      border-color: rgba(255,107,90,0.45);
+      background: rgba(255,107,90,0.12);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: rgba(46,58,70,0.70);
+    }
   </style>
 </head>
 
@@ -277,19 +377,250 @@
   <div class="container">
     <header>
       <div class="brand">
-        <!-- Optional logo -->
+        <!-- Optional logo: place a file at admin/publisher/logo.svg and uncomment -->
         <!-- <img src="logo.svg" alt="Catalyst Ridge Advisory" /> -->
         <div class="brand-text">
           <div class="brand-title">Catalyst Ridge Advisory</div>
           <div class="brand-sub">Internal Publisher Tool</div>
         </div>
       </div>
+      <div class="topbar-right">
+        <div class="small">Path: <span class="pill">/cra/</span></div>
+      </div>
     </header>
 
     <h1>HTML Publisher</h1>
-    <div class="sub">
-      Publish and manage pages inside <span class="pill">/cra/</span>
+    <div class="sub">Publish and manage pages inside <span class="pill">/cra/</span></div>
+
+    <div class="grid">
+      <div class="card">
+        <label for="slug">Slug or filename</label>
+        <input id="slug" type="text" placeholder="example: landing or landing.html" />
+
+        <div class="rowline">
+          <label class="check">
+            <input id="overwrite" type="checkbox" />
+            Overwrite if exists
+          </label>
+
+          <button id="publishBtn" class="primary" type="button">Publish</button>
+          <button id="clearBtn" type="button">Clear</button>
+          <button id="refreshBtn" type="button">Refresh list</button>
+        </div>
+
+        <div id="notice" class="notice info" style="display:none;"></div>
+
+        <div class="mutedHint">
+          Tip: paste a full HTML document, including doctype.
+        </div>
+      </div>
+
+      <div class="card">
+        <label for="html">HTML</label>
+        <textarea id="html" placeholder="Paste HTML here..."></textarea>
+      </div>
     </div>
 
-    <!-- Everything below this point is unchanged logic-wise -->
-    <!-- Your existing JS + markup continues here -->
+    <div class="section-gap"></div>
+
+    <div class="card">
+      <div class="listHeader">
+        <div>
+          <h2>Published pages</h2>
+          <div id="listStatus"></div>
+        </div>
+      </div>
+
+      <div id="list" class="listWrap"></div>
+    </div>
+  </div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+
+    function setNotice(kind, msg) {
+      const box = $("notice");
+      if (!kind || !msg) {
+        box.style.display = "none";
+        box.textContent = "";
+        box.className = "notice info";
+        return;
+      }
+      box.style.display = "block";
+      box.textContent = msg;
+      box.className = "notice " + (kind === "ok" ? "ok" : kind === "err" ? "err" : "info");
+    }
+
+    function normalizeSlug(input) {
+      const raw = String(input || "").trim();
+      if (!raw) return "";
+      if (!raw.includes(".")) return raw + ".html";
+      return raw;
+    }
+
+    function trashIcon() { return "🗑️"; }
+
+    // Accepts { ok:true, pages:[{slug,url}] } or { files:[{name}] }
+    function normalizePagesResponse(data) {
+      if (data && data.ok && Array.isArray(data.pages)) {
+        return data.pages.map(p => ({
+          slug: String(p.slug || "").trim(),
+          url: p.url ? String(p.url) : ""
+        })).filter(p => p.slug);
+      }
+      if (data && Array.isArray(data.files)) {
+        return data.files.map(f => ({
+          slug: String(f.name || "").trim(),
+          url: "/cra/" + String(f.name || "").trim()
+        })).filter(p => p.slug);
+      }
+      return [];
+    }
+
+    async function loadPages() {
+      $("listStatus").textContent = "Loading...";
+      $("list").innerHTML = "";
+      setNotice("", "");
+
+      let data;
+      try {
+        const res = await fetch("/.netlify/functions/list-pages", { method: "GET", credentials: "include" });
+        data = await res.json();
+      } catch (e) {
+        $("listStatus").textContent = "Could not load list.";
+        setNotice("err", "List failed: " + (e && e.message ? e.message : String(e)));
+        return;
+      }
+
+      const pages = normalizePagesResponse(data);
+
+      if (!pages.length) {
+        if (data && data.ok === false) {
+          $("listStatus").textContent = "List unavailable.";
+          setNotice("err", "List failed: " + (data.error ? data.error : "Unknown error"));
+          return;
+        }
+        $("listStatus").textContent = "No pages yet.";
+        return;
+      }
+
+      $("listStatus").textContent = "";
+      for (const p of pages) {
+        const slug = p.slug || "";
+        const url = p.url || ("/cra/" + slug);
+
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const name = document.createElement("div");
+        name.className = "rowName";
+        name.textContent = slug;
+
+        const actions = document.createElement("div");
+        actions.className = "rowActions";
+
+        const view = document.createElement("a");
+        view.className = "viewBtn";
+        view.href = url;
+        view.target = "_blank";
+        view.rel = "noopener";
+        view.textContent = "View";
+
+        const del = document.createElement("button");
+        del.className = "trash danger";
+        del.type = "button";
+        del.textContent = trashIcon();
+        del.title = "Delete";
+
+        del.addEventListener("click", async () => {
+          const ok = confirm(`Delete /cra/${slug}? This cannot be undone.`);
+          if (!ok) return;
+
+          del.disabled = true;
+          try {
+            const r = await fetch("/.netlify/functions/delete-page", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ slug })
+            });
+            const j = await r.json();
+            if (!j || !j.ok) throw new Error((j && j.error) ? j.error : "Delete failed");
+            setNotice("ok", `Deleted: /cra/${slug}`);
+            await loadPages();
+          } catch (e) {
+            setNotice("err", "Delete failed: " + (e && e.message ? e.message : String(e)));
+          } finally {
+            del.disabled = false;
+          }
+        });
+
+        actions.appendChild(view);
+        actions.appendChild(del);
+
+        row.appendChild(name);
+        row.appendChild(actions);
+
+        $("list").appendChild(row);
+      }
+    }
+
+    async function publish() {
+      const slug = normalizeSlug($("slug").value);
+      $("slug").value = slug;
+
+      if (!slug) {
+        setNotice("err", "Please enter a slug or filename.");
+        return;
+      }
+
+      const html = $("html").value || "";
+      if (!html.trim()) {
+        setNotice("err", "Please paste HTML.");
+        return;
+      }
+
+      const overwrite = $("overwrite").checked;
+
+      $("publishBtn").disabled = true;
+      setNotice("info", "Publishing...");
+
+      try {
+        const res = await fetch("/.netlify/functions/publish", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ slug, html, overwrite })
+        });
+
+        const data = await res.json();
+        if (!data || !data.ok) throw new Error((data && data.error) ? data.error : "Publish failed");
+
+        const url = data.url || ("/cra/" + slug);
+        const commit = data.commit || "(unknown)";
+        setNotice("ok", `Published: ${url}\nCommit: ${commit}`);
+
+        await loadPages();
+        document.querySelector(".listHeader").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (e) {
+        setNotice("err", "Publish failed: " + (e && e.message ? e.message : String(e)));
+      } finally {
+        $("publishBtn").disabled = false;
+      }
+    }
+
+    function clearForm() {
+      $("slug").value = "";
+      $("html").value = "";
+      $("overwrite").checked = false;
+      setNotice("", "");
+    }
+
+    $("publishBtn").addEventListener("click", publish);
+    $("clearBtn").addEventListener("click", clearForm);
+    $("refreshBtn").addEventListener("click", loadPages);
+
+    loadPages();
+  </script>
+</body>
+</html>
