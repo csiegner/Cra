@@ -5,44 +5,46 @@ export default async (request) => {
     const owner = process.env.GITHUB_OWNER;
     const repo = process.env.GITHUB_REPO;
 
-    const dir = "cra"; // your target directory
+    const dir = "cra";
 
     if (!token || !owner || !repo) {
       return json(500, {
+        ok: false,
         error: "Missing GitHub env vars. Need GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO."
       });
     }
 
     const body = await request.json().catch(() => ({}));
-    const filename = sanitizeFilename(body.filename);
+    const slug = sanitizeSlug(body.slug);
     const html = typeof body.html === "string" ? body.html : "";
     const overwrite = !!body.overwrite;
 
-    if (!filename) return json(400, { error: "Invalid filename." });
-    if (!html || html.trim().length < 10) return json(400, { error: "HTML is empty." });
+    if (!slug) return json(400, { ok: false, error: "Missing or invalid slug." });
+    if (!html || !html.trim()) return json(400, { ok: false, error: "Missing HTML." });
 
-    const path = `${dir}/${filename}`;
+    const path = `${dir}/${slug}`;
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
+    // 1) Check if file exists to get sha
     let sha = null;
     const checkRes = await fetch(apiUrl, { headers: ghHeaders(token) });
 
     if (checkRes.ok) {
       const existing = await checkRes.json();
-      sha = existing.sha;
+      sha = existing && existing.sha;
 
       if (!overwrite) {
         return json(409, {
-          error: "File already exists. Turn on overwrite to replace it.",
-          filename,
-          path
+          ok: false,
+          error: "File already exists. Turn on overwrite to replace it."
         });
       }
     } else if (checkRes.status !== 404) {
-      const t = await checkRes.text();
-      return json(checkRes.status, { error: "GitHub check failed.", details: t });
+      const text = await checkRes.text();
+      return json(checkRes.status, { ok: false, error: "GitHub check failed.", details: text });
     }
 
+    // 2) Create or update
     const putRes = await fetch(apiUrl, {
       method: "PUT",
       headers: { ...ghHeaders(token), "Content-Type": "application/json" },
@@ -54,15 +56,19 @@ export default async (request) => {
     });
 
     if (!putRes.ok) {
-      const t = await putRes.text();
-      return json(putRes.status, { error: "GitHub write failed.", details: t });
+      const text = await putRes.text();
+      return json(putRes.status, { ok: false, error: "GitHub write failed.", details: text });
     }
 
-    const publicUrl = `/cra/${encodeURIComponent(filename)}`;
+    const result = await putRes.json().catch(() => ({}));
+    const commit = (result && result.commit && result.commit.sha) ? result.commit.sha : null;
 
-    return json(200, { ok: true, filename, path, publicUrl, overwritten: !!sha });
+    // Your site should serve pages from /cra/<slug>
+    const url = `/cra/${encodeURIComponent(slug)}`;
+
+    return json(200, { ok: true, url, commit });
   } catch (err) {
-    return json(500, { error: "Unexpected error.", details: String(err) });
+    return json(500, { ok: false, error: "Unexpected error.", details: String(err) });
   }
 };
 
@@ -74,11 +80,16 @@ function ghHeaders(token) {
   };
 }
 
-function sanitizeFilename(name) {
-  const raw = String(name || "").trim();
+function sanitizeSlug(slug) {
+  const raw = String(slug || "").trim();
   if (!raw) return "";
+
+  // block folder paths and traversal
   if (raw.includes("/") || raw.includes("\\") || raw.includes("..")) return "";
+
+  // If user typed just a name, default to .html
   if (!raw.includes(".")) return raw + ".html";
+
   return raw;
 }
 
