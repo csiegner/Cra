@@ -3,11 +3,225 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Publisher Exists</title>
+  <title>Catalyst Ridge Publisher</title>
+
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <style>
+    :root{
+      --teal:#0E5E6F;
+      --slate:#2E3A46;
+      --white:#F8F9FA;
+      --coral:#FF6B5A;
+      --sky:#A8DADC;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, rgba(14,94,111,.12), rgba(255,107,90,.10), rgba(168,218,220,.18));
+      color:var(--slate);
+    }
+    .wrap{max-width: 980px; margin: 28px auto; padding: 0 16px 44px;}
+    .card{
+      background: rgba(248,249,250,.92);
+      border: 1px solid rgba(46,58,70,.10);
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(46,58,70,.12);
+      overflow:hidden;
+    }
+    header{
+      padding: 18px 20px;
+      background: linear-gradient(135deg, rgba(14,94,111,.95), rgba(168,218,220,.55));
+      color: var(--white);
+    }
+    header .toprow{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;}
+    header h1{margin:0;font-size:18px;letter-spacing:.2px;}
+    header p{margin:8px 0 0;opacity:.92;font-size:13px;line-height:1.4;max-width:72ch;}
+    .pill{
+      display:inline-flex; align-items:center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      background: rgba(168,218,220,.30);
+      color: #ffffff;
+      border: 1px solid rgba(248,249,250,.28);
+    }
+    .content{padding: 16px 20px 20px;}
+    label{
+      display:block;
+      font-size: 13px;
+      margin: 14px 0 6px;
+      font-weight: 700;
+      color: rgba(46,58,70,.92);
+    }
+    input[type="text"], textarea{
+      width:100%;
+      border: 1px solid rgba(46,58,70,.18);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 14px;
+      background: white;
+      color: var(--slate);
+      outline: none;
+    }
+    input:focus, textarea:focus{
+      border-color: rgba(14,94,111,.55);
+      box-shadow: 0 0 0 4px rgba(168,218,220,.35);
+    }
+    textarea{
+      min-height: 360px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      line-height: 1.35;
+    }
+    .row{display:flex; gap: 12px; flex-wrap:wrap;}
+    .row > div{flex: 1 1 280px;}
+    .hint{margin-top: 6px; font-size: 12px; color: rgba(46,58,70,.72); line-height: 1.35;}
+    .actions{display:flex; gap: 10px; flex-wrap:wrap; align-items:center; margin-top: 14px;}
+    button{
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor:pointer;
+    }
+    .btn-primary{background: var(--coral); color: white; box-shadow: 0 10px 18px rgba(255,107,90,.26);}
+    .btn-secondary{background: rgba(14,94,111,.10); color: var(--teal); border: 1px solid rgba(14,94,111,.22);}
+    .btn-secondary:hover{background: rgba(14,94,111,.14);}
+    .btn-link{
+      background: transparent;
+      color: rgba(248,249,250,.95);
+      border: 1px solid rgba(248,249,250,.30);
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .out{
+      margin-top: 14px;
+      background: rgba(46,58,70,.06);
+      border: 1px solid rgba(46,58,70,.10);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .danger{color:#7a1f16;background: rgba(255,107,90,.10);border-color: rgba(255,107,90,.25);}
+    .ok{color:#0b4c23;background: rgba(168,218,220,.22);border-color: rgba(14,94,111,.20);}
+  </style>
 </head>
-<body style="font-family:system-ui;padding:24px;">
-  <h1>Publisher page exists</h1>
-  <p>If you can see this, Netlify is serving /admin/publisher/ correctly.</p>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <div class="toprow">
+          <div class="pill">Catalyst Ridge Admin</div>
+          <button class="btn-link" id="logoutBtn" type="button">Log out</button>
+        </div>
+        <h1 style="margin-top:10px;">Publisher</h1>
+        <p>
+          Paste a full HTML document and publish it to <strong>/cra/slug/</strong>.
+          Next step will wire this to the Netlify Function that performs the publish.
+        </p>
+      </header>
+
+      <div class="content">
+        <div class="row">
+          <div>
+            <label for="slug">Slug</label>
+            <input id="slug" type="text" placeholder="ai-readiness-snapshot" />
+            <div class="hint">Will publish to: <span id="urlHint">/cra/ai-readiness-snapshot/</span></div>
+          </div>
+          <div>
+            <label for="mode">Mode</label>
+            <input id="mode" type="text" value="Not publishing yet (UI only)" disabled />
+            <div class="hint">We will enable publishing after the function is added.</div>
+          </div>
+        </div>
+
+        <label for="html">HTML</label>
+        <textarea id="html" placeholder="Paste a full HTML document here"></textarea>
+
+        <div class="actions">
+          <button class="btn-secondary" id="btnSlug" type="button">Make slug from &lt;title&gt;</button>
+          <button class="btn-primary" id="btnPublish" type="button">Publish</button>
+          <span class="hint">Right now Publish will show a message, next step we connect it to the API.</span>
+        </div>
+
+        <div id="out" class="out">Ready.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const out = $("out");
+
+    function slugify(text){
+      return String(text || "")
+        .toLowerCase()
+        .trim()
+        .replace(/['"]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "")
+        .slice(0, 60);
+    }
+
+    function setOutput(msg, kind){
+      out.className = "out " + (kind || "");
+      out.textContent = msg;
+    }
+
+    function updateUrlHint(){
+      const s = $("slug").value.trim() || "your-slug";
+      $("urlHint").textContent = "/cra/" + s + "/";
+    }
+
+    $("slug").addEventListener("input", updateUrlHint);
+    updateUrlHint();
+
+    $("btnSlug").addEventListener("click", () => {
+      const html = $("html").value;
+      const match = html.match(/<title>([^<]{1,120})<\/title>/i);
+      const title = match ? match[1].trim() : "";
+      if (!title){
+        setOutput("No <title> found. Add a <title> tag or type a slug manually.", "danger");
+        return;
+      }
+      $("slug").value = slugify(title);
+      updateUrlHint();
+      setOutput("Slug set from <title>.", "ok");
+    });
+
+    $("btnPublish").addEventListener("click", async () => {
+      const slug = $("slug").value.trim();
+      const html = $("html").value;
+
+      if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){
+        setOutput("Invalid slug. Use lowercase letters and numbers, with single dashes between words.", "danger");
+        return;
+      }
+      if (!html || html.length < 20){
+        setOutput("HTML looks empty.", "danger");
+        return;
+      }
+
+      setOutput("UI is ready. Next step: add the Netlify publish function and wire this button to it.", "ok");
+    });
+
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.init();
+      $("logoutBtn").addEventListener("click", () => {
+        window.netlifyIdentity.logout();
+        window.location.href = "/admin/login.html";
+      });
+    }
+  </script>
 </body>
 </html>
-
