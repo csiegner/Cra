@@ -1,2 +1,2 @@
 /admin/*  /admin/login.html  302  Role=!admin
-/admin/*  /admin/:splat      200  Role=admin
+/admin/*  /admin/*           200  Role=admin
