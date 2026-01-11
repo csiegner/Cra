@@ -5,140 +5,244 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Catalyst Ridge Publisher</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/netlify-identity-widget@1/build/netlify-identity-widget.min.js"></script>
+
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #0E5E6F, #1CA7A6);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(circle at 20% 10%, rgba(255,107,90,.22), transparent 50%),
+                  radial-gradient(circle at 80% 85%, rgba(168,218,220,.33), transparent 55%),
+                  linear-gradient(135deg, #0E5E6F, #1CA7A6);
+      padding: 22px;
     }
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 24px;
-      width: 100%;
-      max-width: 520px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    .shell{
+      width:100%;
+      max-width:980px;
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 24px 60px rgba(0,0,0,.18);
+      overflow:hidden;
     }
-    h1 {
-      margin-top: 0;
-      color: #0E5E6F;
+    .hdr{
+      padding:18px 22px;
+      background: rgba(14,94,111,0.06);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
     }
-    label {
-      display: block;
-      font-weight: 600;
-      margin-top: 16px;
+    .hdr h1{
+      margin:0;
+      color:#0E5E6F;
+      font-size:24px;
     }
-    input, textarea {
-      width: 100%;
-      margin-top: 6px;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
+    .hdr .sub{
+      margin-top:6px;
+      color:#445;
+      font-size:14px;
     }
-    textarea {
-      min-height: 160px;
-      font-family: monospace;
+    .who{
+      text-align:right;
+      color:#445;
+      font-size:13px;
+      margin-top:6px;
+      white-space:nowrap;
     }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
-      background: #FF6B5A;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
+    .body{
+      padding:18px 22px 22px 22px;
     }
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+    label{
+      display:block;
+      margin-top:14px;
+      font-weight:700;
+      color:#223;
     }
-    .status {
-      margin-top: 16px;
-      font-size: 14px;
+    input, textarea{
+      width:100%;
+      margin-top:8px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.18);
+      font-size:14px;
+      outline:none;
     }
-    .success {
-      color: #0E5E6F;
-      font-weight: 600;
+    textarea{
+      min-height:280px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }
-    .error {
-      color: #B00020;
-      font-weight: 600;
+    .help{
+      margin-top:6px;
+      color:#667;
+      font-size:13px;
     }
+    .row{
+      display:flex;
+      gap:14px;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      flex: 1 1 260px;
+      border:0;
+      border-radius:14px;
+      padding:14px 14px;
+      font-weight:800;
+      font-size:16px;
+      cursor:pointer;
+    }
+    .primary{ background:#0E5E6F; color:#fff; }
+    .danger{ background:#FF6B5A; color:#fff; }
+    .btn:disabled{ opacity:.65; cursor:not-allowed; }
+    .status{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:14px;
+      background: rgba(14,94,111,0.06);
+      color:#0E5E6F;
+      font-weight:700;
+      line-height:1.35;
+    }
+    .status.err{
+      background: rgba(176,0,32,0.08);
+      color:#B00020;
+    }
+    code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    a{ color:#0E5E6F; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>CRA Publisher</h1>
+  <div class="shell">
+    <div class="hdr">
+      <div>
+        <h1>Catalyst Ridge Publisher</h1>
+        <div class="sub">Paste HTML, choose a slug, publish to <strong>/cra/slug/</strong>.</div>
+      </div>
+      <div class="who" id="who">Checking auth...</div>
+    </div>
 
-    <label>
-      Page slug
-      <input id="slug" placeholder="ai-snapshot" />
-    </label>
+    <div class="body">
+      <label for="slug">Slug</label>
+      <input id="slug" placeholder="ai-test" autocomplete="off" />
+      <div class="help">Lowercase letters, numbers, single dashes. No spaces.</div>
 
-    <label>
-      HTML content
-      <textarea id="html" placeholder="<h1>My page</h1>"></textarea>
-    </label>
+      <label for="html">HTML</label>
+      <textarea id="html" placeholder="<h1>AI Snapshot</h1>"></textarea>
 
-    <button id="publishBtn">Publish</button>
+      <div class="help">We will publish as: <code>/cra/&lt;slug&gt;/</code> (stored in GitHub as <code>cra/&lt;slug&gt;/index.html</code>).</div>
 
-    <div id="status" class="status"></div>
+      <div class="row">
+        <button class="btn primary" id="publishBtn">Publish</button>
+        <button class="btn danger" id="logoutBtn">Log out</button>
+      </div>
+
+      <div id="status" class="status">Ready.</div>
+    </div>
   </div>
 
   <script>
-    const btn = document.getElementById("publishBtn");
-    const status = document.getElementById("status");
+    const whoEl = document.getElementById("who");
+    const statusEl = document.getElementById("status");
+    const publishBtn = document.getElementById("publishBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-    btn.onclick = async () => {
-      const slug = document.getElementById("slug").value.trim();
-      const html = document.getElementById("html").value.trim();
+    function setStatus(msg, isError=false) {
+      statusEl.className = "status" + (isError ? " err" : "");
+      statusEl.innerHTML = msg;
+    }
 
-      status.textContent = "";
-      status.className = "status";
+    function sanitizeSlug(input) {
+      return (input || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9-]/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
 
-      if (!slug || !html) {
-        status.textContent = "Slug and HTML are required.";
-        status.classList.add("error");
-        return;
-      }
+    if (!window.netlifyIdentity) {
+      setStatus("Netlify Identity widget failed to load.", true);
+    } else {
+      netlifyIdentity.on("init", user => {
+        if (!user) {
+          // Not logged in, go to login page
+          window.location.href = "/admin/login.html";
+          return;
+        }
+        const email = user.email || "(unknown)";
+        whoEl.textContent = "Authenticated as " + email;
+        setStatus("Ready.");
+      });
 
-      btn.disabled = true;
-      btn.textContent = "Publishing...";
+      netlifyIdentity.on("error", err => {
+        setStatus(err && err.message ? err.message : "Auth error.", true);
+      });
 
-      try {
-        const res = await fetch("/.netlify/functions/publish", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slug, html })
+      logoutBtn.addEventListener("click", () => {
+        setStatus("Logging out...");
+        netlifyIdentity.logout();
+        // On logout, go back to login page
+        netlifyIdentity.on("logout", () => {
+          window.location.href = "/admin/login.html";
         });
+      });
 
-        const json = await res.json();
+      publishBtn.addEventListener("click", async () => {
+        const slugRaw = document.getElementById("slug").value;
+        const slug = sanitizeSlug(slugRaw);
+        const html = (document.getElementById("html").value || "").trim();
 
-        if (!json.ok) {
-          throw new Error(json.error || "Publish failed");
+        document.getElementById("slug").value = slug;
+
+        if (!slug) {
+          setStatus("Slug is required.", true);
+          return;
+        }
+        if (!html) {
+          setStatus("HTML is required.", true);
+          return;
         }
 
-        status.innerHTML = `Published: <a href="${json.url}" target="_blank">${json.url}</a>`;
-        status.classList.add("success");
-      } catch (err) {
-        status.textContent = err.message;
-        status.classList.add("error");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Publish";
-      }
-    };
+        publishBtn.disabled = true;
+        publishBtn.textContent = "Publishing...";
+        setStatus("Publishing...");
+
+        try {
+          const res = await fetch("/.netlify/functions/publish", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slug, html })
+          });
+
+          const json = await res.json();
+
+          if (!json.ok) {
+            throw new Error(json.error || "Publish failed.");
+          }
+
+          const fullUrl = json.url || ("/cra/" + slug + "/");
+
+          setStatus(
+            `Published: <a href="${fullUrl}" target="_blank">${fullUrl}</a><br>` +
+            `Commit: <code>${json.commit || "(no sha returned)"}</code><br>` +
+            `Path: <code>${json.path || "(no path returned)"}</code>`
+          );
+        } catch (e) {
+          setStatus("Error: " + (e.message || "Unknown error"), true);
+        } finally {
+          publishBtn.disabled = false;
+          publishBtn.textContent = "Publish";
+        }
+      });
+
+      netlifyIdentity.init();
+    }
   </script>
 </body>
 </html>
-
 
 
