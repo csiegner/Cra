@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AI Readiness Snapshot: a practical introduction to AI for mission-driven teams. 90 minutes, virtual, with a pre-session survey and a tailored AI Use Snapshot." />
+  <meta name="theme-color" content="#0E5E6F" />
+  <title>AI Readiness Snapshot | Catalyst Ridge Advisory</title>
+
+  <style>
+    :root{
+      --teal:#0E5E6F;
+      --teal-2:#0A4C59;
+      --coral:#FF6B5A;
+      --sky:#A8DADC;
+      --slate:#2E3A46;
+
+      --ink:#0c1116;
+      --muted:#5a6572;
+
+      --card: rgba(255,255,255,.78);
+      --card-2: rgba(255,255,255,.72);
+      --line: rgba(230,234,238,.85);
+
+      --radius:22px;
+      --shadow: 0 18px 40px rgba(0,0,0,.08);
+      --shadow-soft: 0 10px 26px rgba(0,0,0,.06);
+
+      --max: 1200px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--ink);
+      line-height:1.45;
+      background:
+        radial-gradient(1300px 700px at 10% 0%, rgba(168,218,220,.40), transparent 62%),
+        radial-gradient(1400px 820px at 90% 10%, rgba(255,107,90,.18), transparent 62%),
+        radial-gradient(1200px 800px at 50% 110%, rgba(14,94,111,.10), transparent 60%),
+        linear-gradient(180deg, #ffffff 0%, #fbfdff 45%, #ffffff 100%);
+      background-attachment: fixed;
+    }
+
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 24px}
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 18px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      text-decoration:none;
+      flex: 0 0 auto;
+    }
+    .brand img{
+      display:block;
+      height: 200px;
+      width:auto;
+      max-width: 520px;
+      object-fit: contain;
+    }
+
+    .navRight{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap: 16px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .navlinks{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .navlink{
+      text-decoration:none;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--slate);
+      padding: 10px 12px;
+      border-radius: 12px;
+      white-space:nowrap;
+    }
+    .navlink:hover{background: rgba(14,94,111,.08)}
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 14px 22px;
+      border-radius: 18px;
+      font-weight: 900;
+      font-size: 15px;
+      text-decoration:none;
+      border:1px solid transparent;
+      cursor:pointer;
+      transition: background .2s ease, transform .06s ease, box-shadow .2s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{
+      background: var(--teal);
+      color:#fff;
+      box-shadow: 0 18px 34px rgba(14,94,111,.22);
+    }
+    .btn.primary:hover{background: var(--teal-2)}
+    .btn.ghost{
+      background: rgba(255,255,255,.75);
+      border-color: rgba(46,58,70,.18);
+      color: var(--slate);
+    }
+    .btn.ghost:hover{background:#fff}
+
+    .menuBtn{
+      display:none;
+      align-items:center;
+      justify-content:center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(46,58,70,.18);
+      background: rgba(255,255,255,.75);
+      cursor:pointer;
+    }
+    .menuBtn:hover{background:#fff}
+
+    .menuIcon{
+      width: 20px;
+      height: 14px;
+      position: relative;
+    }
+    .menuIcon span{
+      position:absolute;
+      left:0; right:0;
+      height: 2px;
+      background: var(--slate);
+      border-radius: 2px;
+      transition: transform .2s ease, top .2s ease, opacity .2s ease;
+    }
+    .menuIcon span:nth-child(1){top:0}
+    .menuIcon span:nth-child(2){top:6px}
+    .menuIcon span:nth-child(3){top:12px}
+
+    .mobilePanel{
+      display:none;
+      border-top: 1px solid var(--line);
+      background: rgba(255,255,255,.94);
+      backdrop-filter: saturate(140%) blur(10px);
+    }
+    .mobilePanelInner{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 14px 24px 18px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .mobilePanel a{
+      text-decoration:none;
+      padding: 12px 12px;
+      border-radius: 14px;
+      color: var(--slate);
+      font-weight: 700;
+      background: rgba(14,94,111,.06);
+      border: 1px solid rgba(14,94,111,.10);
+    }
+    .mobilePanel a:hover{background: rgba(14,94,111,.10)}
+    .mobilePanel .mobileCta{
+      background: var(--teal);
+      border-color: transparent;
+      color:#fff;
+      box-shadow: 0 14px 26px rgba(14,94,111,.18);
+      text-align:center;
+    }
+    .mobilePanel .mobileCta:hover{background: var(--teal-2)}
+
+    .isOpen .mobilePanel{display:block}
+    .isOpen .menuIcon span:nth-child(1){top:6px; transform: rotate(45deg)}
+    .isOpen .menuIcon span:nth-child(2){opacity:0}
+    .isOpen .menuIcon span:nth-child(3){top:6px; transform: rotate(-45deg)}
+
+    main{padding: 26px 0 0}
+    section{padding: 56px 0}
+
+    .kicker{
+      display:inline-block;
+      font-weight: 950;
+      font-size: 12px;
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 12px;
+    }
+    h1{
+      margin:0 0 14px;
+      font-size: 54px;
+      letter-spacing: -1px;
+      line-height: 1.02;
+    }
+    h2{
+      margin:0 0 12px;
+      font-size: 36px;
+      letter-spacing: -.5px;
+      line-height: 1.1;
+    }
+    h3{
+      margin:0 0 10px;
+      font-size: 18px;
+    }
+    p{margin:0}
+    .sub{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 86ch;
+    }
+
+    .hero{
+      padding-top: 10px;
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .ctaRow{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      margin-top: 22px;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .heroCard{
+      padding: 22px;
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+      justify-content:space-between;
+      box-shadow: var(--shadow);
+      background: var(--card-2);
+    }
+
+    .tag{
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,107,90,.12);
+      border: 1px solid rgba(255,107,90,.30);
+      color: var(--slate);
+      font-weight: 900;
+      font-size: 12px;
+      width: fit-content;
+    }
+
+    .miniGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .mini{
+      background: rgba(246,248,250,.9);
+      border: 1px solid rgba(230,234,238,.95);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .mini strong{display:block; font-size: 13px}
+    .mini span{display:block; margin-top: 6px; font-size: 12px; color: var(--muted)}
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .tile{
+      grid-column: span 6;
+      padding: 22px;
+    }
+    .tile p{color: var(--muted); font-size: 15px}
+
+    .tileFull{
+      grid-column: span 12;
+      padding: 22px;
+    }
+
+    .list{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .list li{margin: 8px 0}
+
+    .bigCta{
+      margin-top: 18px;
+      padding: 24px;
+      border-radius: 26px;
+      border: 1px solid rgba(14,94,111,.14);
+      background: linear-gradient(135deg, rgba(14,94,111,.12), rgba(168,218,220,.35));
+      box-shadow: var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+    .bigCta strong{font-size: 22px}
+    .bigCta span{display:block; margin-top: 6px; color: var(--muted); font-size: 15px; max-width: 72ch}
+
+    .price{
+      display:inline-flex;
+      gap: 10px;
+      align-items:baseline;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(14,94,111,.18);
+      background: rgba(255,255,255,.70);
+      width: fit-content;
+    }
+    .price b{font-size: 24px}
+    .price small{color: var(--muted); font-weight: 800}
+
+    footer{
+      padding: 32px 0 48px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .foot{
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width: 980px){
+      .hero{grid-template-columns: 1fr}
+      h1{font-size: 42px}
+      h2{font-size: 32px}
+      .tile{grid-column: span 12}
+      .navlinks{display:none}
+      .menuBtn{display:inline-flex}
+      .brand img{height: 74px}
+    }
+    @media (max-width: 560px){
+      .wrap{padding:0 18px}
+      .brand img{height: 62px; max-width: 340px}
+      h1{font-size: 36px}
+      .miniGrid{grid-template-columns: 1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <header id="siteHeader">
+    <div class="nav">
+      <a class="brand" href="#top" aria-label="Catalyst Ridge Advisory">
+        <img src="catalyst-ridge-logo.png" alt="Catalyst Ridge Advisory logo">
+      </a>
+
+      <div class="navRight">
+        <div class="navlinks" aria-label="Primary navigation (desktop)">
+          <a class="navlink" href="#overview">Overview</a>
+          <a class="navlink" href="#audience">Who This Is For</a>
+          <a class="navlink" href="#included">What Is Included</a>
+          <a class="navlink" href="#scope">Not Included</a>
+          <a class="navlink" href="#investment">Investment</a>
+        </div>
+
+        <a class="btn primary" href="#next">Next Steps</a>
+
+        <button class="menuBtn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false">
+          <div class="menuIcon" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobilePanel" id="mobilePanel" aria-label="Mobile menu">
+      <div class="mobilePanelInner">
+        <a href="#overview">Overview</a>
+        <a href="#audience">Who This Is For</a>
+        <a href="#gain">What You Will Gain</a>
+        <a href="#included">What Is Included</a>
+        <a href="#scope">Not Included</a>
+        <a href="#investment">Investment</a>
+        <a class="mobileCta" href="#next">Next Steps</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="wrap">
+
+      <section class="hero" aria-label="Hero">
+        <div>
+          <div class="kicker">Catalyst Ridge Advisory</div>
+          <h1>AI Readiness Snapshot</h1>
+          <p class="sub"><strong>A practical introduction to AI for mission driven teams</strong></p>
+
+          <p class="sub">
+            A short, focused engagement designed to help teams understand AI in a clear, grounded way without hype,
+            fear, or pressure to move faster than they are ready. This is an orientation and learning experience,
+            not a commitment to implementation.
+          </p>
+
+          <div class="ctaRow">
+            <a class="btn primary" href="#next">Schedule a Brief Call</a>
+            <a class="btn ghost" href="#included">See What Is Included</a>
+          </div>
+        </div>
+
+        <aside class="card heroCard" aria-label="Engagement summary">
+          <div class="tag">90 minutes, virtual</div>
+
+          <div class="miniGrid" aria-label="Highlights">
+            <div class="mini">
+              <strong>Pre session survey</strong>
+              <span>Tailors the session to your context and concerns.</span>
+            </div>
+            <div class="mini">
+              <strong>Live session</strong>
+              <span>Plain language, practical guardrails, real examples.</span>
+            </div>
+            <div class="mini">
+              <strong>AI Use Snapshot</strong>
+              <span>2 to 3 page leadership takeaway after the session.</span>
+            </div>
+            <div class="mini">
+              <strong>Low risk scope</strong>
+              <span>Clarity and readiness, not implementation.</span>
+            </div>
+          </div>
+
+          <div class="bigCta" style="padding:16px;">
+            <div>
+              <strong>Flat pilot fee: $650</strong>
+              <span>Preparation, facilitation, survey, and the AI Use Snapshot included.</span>
+            </div>
+            <a class="btn primary" href="#investment">Details</a>
+          </div>
+        </aside>
+      </section>
+
+      <section id="overview" aria-label="Overview">
+        <div class="kicker">Overview</div>
+        <h2>A clear first step with shared language and guardrails</h2>
+        <p class="sub">
+          Artificial intelligence is becoming part of everyday work, yet many organizations are unsure how to engage
+          with it responsibly. The AI Readiness Snapshot helps your team understand what AI is, how it is showing up,
+          and what safe and responsible use can look like in your context.
+        </p>
+        <p class="sub">
+          You will leave with practical guardrails and leadership level insight, so your organization can take
+          thoughtful first steps with AI.
+        </p>
+      </section>
+
+      <section id="audience" aria-label="Who This Is For">
+        <div class="kicker">Who This Is For</div>
+        <h2>Mission driven teams that want clarity without technical complexity</h2>
+
+        <div class="grid" role="list">
+          <article class="card tile" role="listitem">
+            <h3>Designed for</h3>
+            <ul class="list">
+              <li>Mission driven organizations, nonprofits, churches, and small teams</li>
+              <li>Leaders who want clarity about AI without technical complexity</li>
+              <li>Teams that value discernment, stewardship, and thoughtful decision making</li>
+            </ul>
+          </article>
+
+          <article class="card tile" role="listitem">
+            <h3>No prior AI experience required</h3>
+            <p>
+              This is built for teams that are curious, cautious, or confused. You do not need an AI program,
+              an engineering team, or an existing strategy to benefit.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="gain" aria-label="What You Will Gain">
+        <div class="kicker">What You Will Gain</div>
+        <h2>Confidence, clarity, and realistic next questions</h2>
+
+        <div class="grid" role="list">
+          <article class="card tile" role="listitem">
+            <h3>By the end, your team will</h3>
+            <ul class="list">
+              <li>Understand what AI is and what it is not</li>
+              <li>Reduce fear and confusion around AI tools</li>
+              <li>Identify appropriate, low risk ways AI may support your work</li>
+              <li>Surface leadership questions to consider before deeper adoption</li>
+            </ul>
+            <p class="sub" style="margin-top:12px; font-size:15px;">
+              This is an orientation and learning experience, not a commitment to implementation.
+            </p>
+          </article>
+
+          <article class="card tile" role="listitem">
+            <h3>What this protects you from</h3>
+            <p>
+              Reactive adoption, unclear expectations, tool sprawl, and avoidable risk. Most teams do not need
+              a big AI program to start. They need shared language, sensible boundaries, and a calm first step.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="included" aria-label="What Is Included">
+        <div class="kicker">What Is Included</div>
+        <h2>Three components, one focused outcome</h2>
+
+        <div class="grid" role="list">
+          <article class="card tile" role="listitem">
+            <h3>Pre Session Readiness Survey</h3>
+            <p>
+              Before the live session, participants complete a short survey to assess current understanding,
+              concerns, and areas of curiosity related to AI. Results are used to tailor the session to your
+              organization’s context and needs.
+            </p>
+          </article>
+
+          <article class="card tile" role="listitem">
+            <h3>Live AI Readiness Session (90 minutes, virtual)</h3>
+            <ul class="list">
+              <li>Plain language overview of AI and how it shows up in everyday work</li>
+              <li>Common myths and misunderstandings that create fear or misuse</li>
+              <li>Three practical principles for safe and responsible use</li>
+              <li>Two to three examples relevant to your organization’s work</li>
+              <li>Time for questions, reflection, and discussion</li>
+            </ul>
+            <p class="sub" style="margin-top:12px; font-size:15px;">
+              Accessible, interactive, and grounded in real world scenarios.
+            </p>
+          </article>
+
+          <article class="card tileFull" role="listitem">
+            <h3>AI Use Snapshot (2 to 3 pages, delivered after the session)</h3>
+            <p>
+              Following the session, your organization receives a short customized summary that includes:
+            </p>
+            <ul class="list">
+              <li>Where AI may be helpful for your team today</li>
+              <li>Key risks and guardrails leaders should be aware of</li>
+              <li>Questions leadership should consider before moving further</li>
+              <li>Clear boundaries around what has and has not been addressed</li>
+            </ul>
+            <p class="sub" style="margin-top:12px; font-size:15px;">
+              This gives leaders a concrete reference point for future conversations and decisions.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="scope" aria-label="What This Engagement Does Not Include">
+        <div class="kicker">Scope Guardrails</div>
+        <h2>Focused and low risk by design</h2>
+        <p class="sub">
+          To keep the scope tight and the risk low, this offering does not include:
+        </p>
+
+        <div class="grid" role="list">
+          <article class="card tile" role="listitem">
+            <ul class="list" style="margin-top:0;">
+              <li>Formal AI policy development</li>
+              <li>Organization wide training programs</li>
+              <li>Legal or compliance review</li>
+            </ul>
+          </article>
+
+          <article class="card tile" role="listitem">
+            <ul class="list" style="margin-top:0;">
+              <li>Tool selection, automation, or workflow implementation</li>
+              <li>Anything open ended or hourly billed</li>
+              <li>Pressure to move faster than you are ready</li>
+            </ul>
+          </article>
+        </div>
+
+        <p class="sub">
+          These areas can be explored separately if and when your organization is ready.
+        </p>
+      </section>
+
+      <section id="investment" aria-label="Investment">
+        <div class="kicker">Investment</div>
+        <h2>Flat pilot fee, no surprises</h2>
+
+        <div class="grid">
+          <div class="card tile">
+            <div class="price" aria-label="Price">
+              <b>$650</b>
+              <small>flat pilot fee</small>
+            </div>
+            <p class="sub" style="margin-top:12px; font-size:15px;">
+              Includes preparation, facilitation, the pre session survey, and the customized AI Use Snapshot.
+              There is no hourly billing and no open ended scope.
+            </p>
+          </div>
+
+          <div class="card tile">
+            <h3>Format</h3>
+            <ul class="list">
+              <li>Virtual session</li>
+              <li>90 minutes</li>
+              <li>Customized based on your survey results</li>
+              <li>Follow up deliverable included</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="facilitator" aria-label="About the Facilitator">
+        <div class="kicker">About the Facilitator</div>
+        <h2>Clarity, risk awareness, practical enablement</h2>
+        <div class="card tileFull">
+          <p class="sub" style="margin-top:0;">
+            This engagement is led by a senior IT leader with experience supporting digital organizations through
+            emerging technology decisions. The focus is clarity, risk awareness, and practical enablement, helping
+            teams engage wisely rather than reactively.
+          </p>
+        </div>
+      </section>
+
+      <section id="next" aria-label="Next Steps">
+        <div class="kicker">Next Steps</div>
+        <h2>Confirm fit, timing, and context</h2>
+        <p class="sub">
+          If the AI Readiness Snapshot feels like a good fit, the next step is a brief conversation to confirm timing
+          and context.
+        </p>
+
+        <div class="bigCta" id="contact">
+          <div>
+            <strong>Ready to schedule the brief call?</strong>
+            <span>Update the email and scheduling link below, then you are live.</span>
+          </div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a class="btn primary" href="mailto:csiegner@gmail.com?subject=AI%20Readiness%20Snapshot%20Inquiry">Email to Schedule</a>
+           
+          </div>
+        </div>
+
+        <p class="sub" style="margin-top:14px; font-size:15px;">
+          Suggested cadence: call, send survey, run the session, deliver the AI Use Snapshot.
+        </p>
+      </section>
+
+      <footer>
+        <div class="foot">
+          <div>© <span id="year"></span> Catalyst Ridge Advisory. Guiding Transformation Forward.</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="#overview">Overview</a>
+            <span aria-hidden="true">•</span>
+            <a href="#included">Included</a>
+            <span aria-hidden="true">•</span>
+            <a href="#investment">Investment</a>
+            <span aria-hidden="true">•</span>
+            <a href="#contact">Contact</a>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const header = document.getElementById("siteHeader");
+    const btn = document.getElementById("menuBtn");
+    const panel = document.getElementById("mobilePanel");
+
+    function closeMenu(){
+      header.classList.remove("isOpen");
+      btn.setAttribute("aria-expanded", "false");
+    }
+
+    btn.addEventListener("click", () => {
+      const isOpen = header.classList.toggle("isOpen");
+      btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    panel.addEventListener("click", (e) => {
+      const t = e.target;
+      if (t && t.tagName === "A") closeMenu();
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 980) closeMenu();
+    });
+  </script>
+</body>
+</html>
