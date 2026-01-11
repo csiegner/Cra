@@ -56,18 +56,47 @@
     </div>
   </div>
 
-  <script>
-    function goPublisher(){ window.location.href = "/admin/publisher/"; }
+<script>
+  const DEST = "/admin/publisher/";
 
-    document.getElementById("loginBtn").addEventListener("click", () => {
-      if (window.netlifyIdentity) window.netlifyIdentity.open();
+  function go() {
+    window.location.replace(DEST);
+  }
+
+  function openLogin() {
+    if (window.netlifyIdentity) window.netlifyIdentity.open("login");
+  }
+
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    openLogin();
+  });
+
+  // Initialize Identity and handle all cases:
+  // - already logged in
+  // - just logged in
+  // - returning from confirmation links
+  window.addEventListener("load", () => {
+    if (!window.netlifyIdentity) return;
+
+    window.netlifyIdentity.init();
+
+    // If already logged in when page loads, redirect immediately
+    const user = window.netlifyIdentity.currentUser();
+    if (user) {
+      go();
+      return;
+    }
+
+    // If user logs in now, redirect
+    window.netlifyIdentity.on("login", () => {
+      go();
     });
 
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => { if (user) goPublisher(); });
-      window.netlifyIdentity.on("login", () => { goPublisher(); });
-      window.netlifyIdentity.init();
-    }
-  </script>
+    // If user is not logged in, optionally pop login modal automatically
+    // Comment this out if you don't want auto-popup
+    // openLogin();
+  });
+</script>
+
 </body>
 </html>
