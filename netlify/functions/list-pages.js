@@ -5,7 +5,6 @@ export default async () => {
     const owner = process.env.GITHUB_OWNER;
     const repo = process.env.GITHUB_REPO;
 
-    // You told me published pages live in /cra/
     const dir = "cra";
 
     if (!token || !owner || !repo) {
@@ -15,37 +14,44 @@ export default async () => {
       });
     }
 
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${dir}`;
-
-    const res = await fetch(apiUrl, {
-      headers: ghHeaders(token)
-    });
+    const apiDirUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${dir}`;
+    const res = await fetch(apiDirUrl, { headers: ghHeaders(token) });
 
     if (!res.ok) {
       const text = await res.text();
-      return json(res.status, {
-        ok: false,
-        error: "GitHub list failed.",
-        details: text
-      });
+      return json(res.status, { ok: false, error: "GitHub list failed.", details: text });
     }
 
     const items = await res.json();
+    const contents = Array.isArray(items) ? items : [];
 
-    // items is an array of repo contents objects
-    const pages = (Array.isArray(items) ? items : [])
+    // 1) Flat files directly under /cra
+    const filePages = contents
       .filter((x) => x && x.type === "file")
-      .map((x) => {
-        const slug = x.name; // filename, e.g. landing.html
-        return {
-          slug,
-          url: `/cra/${encodeURIComponent(slug)}`,
-          // optional debug fields if you ever want them:
-          // path: x.path,
-          // sha: x.sha
-        };
-      })
-      .sort((a, b) => a.slug.localeCompare(b.slug));
+      .map((x) => ({
+        slug: x.name,
+        url: `/cra/${encodeURIComponent(x.name)}`
+      }));
+
+    // 2) Folder pages under /cra/<folder>/index.html
+    const dirs = contents.filter((x) => x && x.type === "dir");
+
+    const dirPages = [];
+    for (const d of dirs) {
+      const folder = d.name;
+      const indexPath = `${dir}/${folder}/index.html`;
+      const indexUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${indexPath}`;
+
+      const check = await fetch(indexUrl, { headers: ghHeaders(token) });
+      if (check.ok) {
+        dirPages.push({
+          slug: folder,
+          url: `/cra/${encodeURIComponent(folder)}/`
+        });
+      }
+    }
+
+    const pages = [...dirPages, ...filePages].sort((a, b) => a.slug.localeCompare(b.slug));
 
     return json(200, { ok: true, pages });
   } catch (err) {
@@ -67,4 +73,3 @@ function json(status, payload) {
     headers: { "Content-Type": "application/json" }
   });
 }
-
