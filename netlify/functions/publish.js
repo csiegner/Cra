@@ -1,107 +1,93 @@
-const crypto = require("crypto");
-
-function json(statusCode, obj) {
-  return {
-    statusCode,
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(obj),
-  };
-}
-
-function sha1(content) {
-  return crypto.createHash("sha1").update(content).digest("hex");
-}
-
-function isValidSlug(slug) {
-  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length <= 60;
-}
-
-function basicHtmlRiskCheck(html) {
-  const s = String(html || "").toLowerCase();
-  const blocked = [
-    "<script",
-    "javascript:",
-    "onerror=",
-    "onclick=",
-    "onload=",
-    "<iframe",
-  ];
-  const hit = blocked.find((x) => s.includes(x));
-  return hit ? `Blocked content detected: ${hit}` : null;
-}
-
+// netlify/functions/publish.js
 exports.handler = async (event) => {
+  // Only allow POST
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
+  }
+
   try {
-    if (event.httpMethod !== "POST") return json(405, { error: "Method not allowed" });
-
-    // Netlify Identity user context
-    const user = event.clientContext && event.clientContext.user;
-    if (!user) return json(401, { error: "Unauthorized" });
-
-    const roles = (user.app_metadata && user.app_metadata.roles) || [];
-    if (!roles.includes("admin")) return json(403, { error: "Forbidden, missing admin role" });
-
     const { slug, html } = JSON.parse(event.body || "{}");
-    if (!slug || !html) return json(400, { error: "Missing slug or html" });
-    if (!isValidSlug(slug)) return json(400, { error: "Invalid slug" });
 
-    const risk = basicHtmlRiskCheck(html);
-    if (risk) return json(400, { error: risk });
-
-    const token = process.env.NETLIFY_AUTH_TOKEN;
-    const siteId = process.env.NETLIFY_SITE_ID;
-    if (!token || !siteId) {
-      return json(500, { error: "Missing NETLIFY_AUTH_TOKEN or NETLIFY_SITE_ID env vars" });
+    // Validate slug
+    const slugOk = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug || "");
+    if (!slugOk) {
+      return { statusCode: 400, body: JSON.stringify({ error: "Invalid slug" }) };
+    }
+    if (!html || html.length < 20) {
+      return { statusCode: 400, body: JSON.stringify({ error: "HTML is empty" }) };
     }
 
-    // Publish under /cra/<slug>/
-    const filePath = `cra/${slug}/index.html`;
-    const fileSha = sha1(html);
+    // Required env vars
+    const token = process.env.GITHUB_TOKEN;
+    const owner = process.env.GITHUB_OWNER;
+    const repo = process.env.GITHUB_REPO;
+    const branch = process.env.GITHUB_BRANCH || "main";
 
-    // Create a deploy with this one file
-    const createDeployResp = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/deploys`, {
-      method: "POST",
-      headers: {
-        authorization: `Bearer ${token}`,
-        "content-type": "application/json",
-      },
+    if (!token || !owner || !repo) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "Missing GitHub environment variables" }),
+      };
+    }
+
+    const path = `cra/${slug}/index.html`;
+    const apiBase = "https://api.github.com";
+
+    // GitHub wants base64 content
+    const contentBase64 = Buffer.from(html, "utf8").toString("base64");
+
+    // 1) Check if the file already exists to get its sha (update vs create)
+    const getUrl = `${apiBase}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${branch}`;
+    const headers = {
+      "Authorization": `Bearer ${token}`,
+      "Accept": "application/vnd.github+json",
+      "User-Agent": "cra-publisher-netlify-function"
+    };
+
+    let existingSha = null;
+    const getRes = await fetch(getUrl, { headers });
+
+    if (getRes.status === 200) {
+      const existing = await getRes.json();
+      existingSha = existing.sha;
+    } else if (getRes.status !== 404) {
+      const text = await getRes.text();
+      return { statusCode: 502, body: JSON.stringify({ error: "GitHub read failed", details: text }) };
+    }
+
+    // 2) Create or update the file
+    const putUrl = `${apiBase}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+    const body = {
+      message: `Publish /cra/${slug}/`,
+      content: contentBase64,
+      branch
+    };
+    if (existingSha) body.sha = existingSha;
+
+    const putRes = await fetch(putUrl, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify(body)
+    });
+
+    if (!putRes.ok) {
+      const text = await putRes.text();
+      return { statusCode: 502, body: JSON.stringify({ error: "GitHub write failed", details: text }) };
+    }
+
+    const putJson = await putRes.json();
+
+    return {
+      statusCode: 200,
       body: JSON.stringify({
-        files: {
-          [filePath]: fileSha,
-        },
-      }),
-    });
+        ok: true,
+        path,
+        commit: putJson.commit?.sha || null,
+        url: `/cra/${slug}/`
+      })
+    };
 
-    const deploy = await createDeployResp.json();
-    if (!createDeployResp.ok) {
-      return json(createDeployResp.status, { error: "Failed to create deploy", details: deploy });
-    }
-
-    // Upload the file
-    const uploadResp = await fetch(
-      `https://api.netlify.com/api/v1/deploys/${deploy.id}/files/${encodeURIComponent(filePath)}`,
-      {
-        method: "PUT",
-        headers: {
-          authorization: `Bearer ${token}`,
-          "content-type": "text/html; charset=utf-8",
-        },
-        body: html,
-      }
-    );
-
-    if (!uploadResp.ok) {
-      const details = await uploadResp.text().catch(() => "");
-      return json(uploadResp.status, { error: "Failed to upload file", details });
-    }
-
-    const publicUrl = (deploy.ssl_url || deploy.url || "").replace(/\/$/, "");
-    return json(200, {
-      ok: true,
-      url: `${publicUrl}/cra/${slug}/`,
-      deploy_id: deploy.id,
-    });
   } catch (err) {
-    return json(500, { error: "Publish crashed", details: String(err && err.message ? err.message : err) });
+    return { statusCode: 500, body: JSON.stringify({ error: "Server error", details: String(err) }) };
   }
 };
