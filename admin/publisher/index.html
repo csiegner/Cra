@@ -198,22 +198,57 @@
       updateUrlHint();
       setOutput("Slug set from <title>.", "ok");
     });
+async function getToken(){
+  const user = window.netlifyIdentity && window.netlifyIdentity.currentUser();
+  if (!user) return null;
+  return await user.jwt(true);
+}
 
-    $("btnPublish").addEventListener("click", async () => {
-      const slug = $("slug").value.trim();
-      const html = $("html").value;
+$("btnPublish").addEventListener("click", async () => {
+  const slug = $("slug").value.trim();
+  const html = $("html").value;
 
-      if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){
-        setOutput("Invalid slug. Use lowercase letters and numbers, with single dashes between words.", "danger");
-        return;
-      }
-      if (!html || html.length < 20){
-        setOutput("HTML looks empty.", "danger");
-        return;
-      }
+  if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){
+    setOutput("Invalid slug. Use lowercase letters and numbers, with single dashes between words.", "danger");
+    return;
+  }
+  if (!html || html.length < 20){
+    setOutput("HTML looks empty.", "danger");
+    return;
+  }
 
-      setOutput("UI is ready. Next step: add the Netlify publish function and wire this button to it.", "ok");
+  const token = await getToken();
+  if (!token){
+    setOutput("Not logged in. Redirecting to login...", "danger");
+    window.location.href = "/admin/login.html";
+    return;
+  }
+
+  setOutput("Publishing...", "");
+
+  try{
+    const resp = await fetch("/.netlify/functions/publish", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ slug, html })
     });
+
+    const data = await resp.json().catch(() => ({}));
+
+    if (!resp.ok){
+      setOutput("Publish failed:\n" + JSON.stringify(data, null, 2), "danger");
+      return;
+    }
+
+    setOutput("Published:\n" + data.url, "ok");
+  }catch(err){
+    setOutput("Publish failed:\n" + String(err && err.message ? err.message : err), "danger");
+  }
+});
+
 
     if (window.netlifyIdentity) {
       window.netlifyIdentity.init();
