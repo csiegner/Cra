@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Login, Catalyst Ridge</title>
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    :root{--teal:#0E5E6F;--slate:#2E3A46;--white:#F8F9FA;--coral:#FF6B5A;--sky:#A8DADC;}
+    body{
+      margin:0; min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, rgba(14,94,111,.12), rgba(255,107,90,.10), rgba(168,218,220,.18));
+      display:flex; align-items:center; justify-content:center;
+      color:var(--slate);
+      padding:18px;
+    }
+    .card{
+      width:min(560px, 100%);
+      background: rgba(248,249,250,.92);
+      border: 1px solid rgba(46,58,70,.10);
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(46,58,70,.12);
+      overflow:hidden;
+    }
+    header{
+      padding: 20px 22px;
+      background: linear-gradient(135deg, rgba(14,94,111,.95), rgba(168,218,220,.55));
+      color: var(--white);
+    }
+    h1{ margin:0; font-size: 18px; }
+    p{ margin:8px 0 0; opacity:.92; font-size: 13px; line-height:1.4; }
+    .content{ padding: 18px 22px 22px; }
+    button{
+      width:100%;
+      border:0; border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px; font-weight: 800;
+      cursor:pointer;
+      background: var(--coral);
+      color:white;
+      box-shadow: 0 10px 18px rgba(255,107,90,.26);
+    }
+    .note{ margin-top:12px; font-size:12px; opacity:.75; line-height:1.4; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <header>
+      <h1>Catalyst Ridge Admin</h1>
+      <p>Log in to access internal tools.</p>
+    </header>
+    <div class="content">
+      <button id="loginBtn">Log in</button>
+      <div class="note">Access is invite only.</div>
+    </div>
+  </div>
+
+  <script>
+    function goPublisher(){ window.location.href = "/admin/publisher/"; }
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      if (window.netlifyIdentity) window.netlifyIdentity.open();
+    });
+
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => { if (user) goPublisher(); });
+      window.netlifyIdentity.on("login", () => { goPublisher(); });
+      window.netlifyIdentity.init();
+    }
+  </script>
+</body>
+</html>
