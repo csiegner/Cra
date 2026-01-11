@@ -2,28 +2,689 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CRA Publisher Bootstrap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Catalyst Ridge Advisory: practical, human centered AI strategy that turns curiosity into clarity, clarity into confidence, and confidence into catalyst driven change." />
+  <meta name="theme-color" content="#0E5E6F" />
+  <title>Catalyst Ridge Advisory</title>
 
-  <!-- Netlify Identity -->
-  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    :root{
+      --teal:#0E5E6F;
+      --teal-2:#0A4C59;
+      --coral:#FF6B5A;
+      --sky:#A8DADC;
+      --slate:#2E3A46;
+
+      --ink:#0c1116;
+      --muted:#5a6572;
+
+      --card: rgba(255,255,255,.78);
+      --card-2: rgba(255,255,255,.72);
+      --line: rgba(230,234,238,.85);
+
+      --radius:22px;
+      --shadow: 0 18px 40px rgba(0,0,0,.08);
+      --shadow-soft: 0 10px 26px rgba(0,0,0,.06);
+
+      --max: 1200px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+
+    /* ONE continuous background */
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--ink);
+      line-height:1.45;
+      background:
+        radial-gradient(1300px 700px at 10% 0%, rgba(168,218,220,.40), transparent 62%),
+        radial-gradient(1400px 820px at 90% 10%, rgba(255,107,90,.18), transparent 62%),
+        radial-gradient(1200px 800px at 50% 110%, rgba(14,94,111,.10), transparent 60%),
+        linear-gradient(180deg, #ffffff 0%, #fbfdff 45%, #ffffff 100%);
+      background-attachment: fixed;
+    }
+
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 24px}
+
+    /* HEADER */
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 18px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      text-decoration:none;
+      flex: 0 0 auto;
+    }
+    .brand img{
+      display:block;
+      height: 200px;
+      width:auto;
+      max-width: 560px;
+      object-fit: contain;
+    }
+
+    /* Desktop nav */
+    .navRight{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap: 16px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .navlinks{
+      display:flex;
+      align-items:center;
+      gap: 14px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .navlink{
+      text-decoration:none;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--slate);
+      padding: 10px 12px;
+      border-radius: 12px;
+      white-space:nowrap;
+    }
+    .navlink:hover{background: rgba(14,94,111,.08)}
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 14px 22px;
+      border-radius: 18px;
+      font-weight: 800;
+      font-size: 15px;
+      text-decoration:none;
+      border:1px solid transparent;
+      cursor:pointer;
+      transition: background .2s ease, transform .06s ease, box-shadow .2s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{
+      background: var(--teal);
+      color:#fff;
+      box-shadow: 0 18px 34px rgba(14,94,111,.22);
+    }
+    .btn.primary:hover{background: var(--teal-2)}
+    .btn.ghost{
+      background: rgba(255,255,255,.75);
+      border-color: rgba(46,58,70,.18);
+      color: var(--slate);
+    }
+    .btn.ghost:hover{background:#fff}
+
+    /* Mobile menu button */
+    .menuBtn{
+      display:none;
+      align-items:center;
+      justify-content:center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(46,58,70,.18);
+      background: rgba(255,255,255,.75);
+      cursor:pointer;
+    }
+    .menuBtn:hover{background:#fff}
+
+    .menuIcon{
+      width: 20px;
+      height: 14px;
+      position: relative;
+    }
+    .menuIcon span{
+      position:absolute;
+      left:0; right:0;
+      height: 2px;
+      background: var(--slate);
+      border-radius: 2px;
+      transition: transform .2s ease, top .2s ease, opacity .2s ease;
+    }
+    .menuIcon span:nth-child(1){top:0}
+    .menuIcon span:nth-child(2){top:6px}
+    .menuIcon span:nth-child(3){top:12px}
+
+    /* Slide down panel */
+    .mobilePanel{
+      display:none;
+      border-top: 1px solid var(--line);
+      background: rgba(255,255,255,.94);
+      backdrop-filter: saturate(140%) blur(10px);
+    }
+    .mobilePanelInner{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 14px 24px 18px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .mobilePanel a{
+      text-decoration:none;
+      padding: 12px 12px;
+      border-radius: 14px;
+      color: var(--slate);
+      font-weight: 600;
+      background: rgba(14,94,111,.06);
+      border: 1px solid rgba(14,94,111,.10);
+    }
+    .mobilePanel a:hover{background: rgba(14,94,111,.10)}
+    .mobilePanel .mobileCta{
+      background: var(--teal);
+      border-color: transparent;
+      color:#fff;
+      box-shadow: 0 14px 26px rgba(14,94,111,.18);
+      text-align:center;
+    }
+    .mobilePanel .mobileCta:hover{background: var(--teal-2)}
+
+    /* Toggle open state */
+    .isOpen .mobilePanel{display:block}
+    .isOpen .menuIcon span:nth-child(1){top:6px; transform: rotate(45deg)}
+    .isOpen .menuIcon span:nth-child(2){opacity:0}
+    .isOpen .menuIcon span:nth-child(3){top:6px; transform: rotate(-45deg)}
+
+    /* CONTENT */
+    main{padding: 30px 0 0}
+    section{padding: 56px 0}
+
+    .kicker{
+      display:inline-block;
+      font-weight: 900;
+      font-size: 12px;
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 12px;
+    }
+    h1{
+      margin:0 0 14px;
+      font-size: 56px;
+      letter-spacing: -1px;
+      line-height: 1.02;
+    }
+    h2{
+      margin:0 0 12px;
+      font-size: 36px;
+      letter-spacing: -.5px;
+      line-height: 1.1;
+    }
+    p{margin:0}
+    .sub{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 82ch;
+    }
+
+    /* HERO */
+    .hero{
+      padding-top: 14px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .ctaRow{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      margin-top: 22px;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .heroCard{
+      padding: 20px;
+      display:flex;
+      flex-direction:column;
+      gap: 16px;
+      justify-content:space-between;
+      box-shadow: var(--shadow);
+      background: var(--card-2);
+    }
+
+    .heroCard h3{
+      margin:0;
+      font-size: 14px;
+      color: var(--slate);
+      letter-spacing:.2px;
+    }
+
+    .miniGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .mini{
+      background: rgba(246,248,250,.9);
+      border: 1px solid rgba(230,234,238,.95);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .mini strong{display:block; font-size: 13px}
+    .mini span{display:block; margin-top: 6px; font-size: 12px; color: var(--muted)}
+
+    /* Services grid */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .service{
+      grid-column: span 6;
+      padding: 22px;
+    }
+    .service h3{margin:0 0 10px; font-size: 18px}
+    .service p{color: var(--muted); font-size: 15px}
+
+    /* Flow */
+    .flow{
+      display:grid;
+      grid-template-columns: repeat(12,1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .step{
+      grid-column: span 3;
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(14,94,111,.16);
+      background: linear-gradient(180deg, rgba(14,94,111,.10), rgba(255,255,255,.70));
+      box-shadow: var(--shadow-soft);
+    }
+    .num{
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 950;
+      font-size: 13px;
+      color: var(--slate);
+      background: rgba(255,107,90,.16);
+      border: 1px solid rgba(255,107,90,.35);
+      margin-bottom: 12px;
+    }
+    .step h4{margin:0 0 8px; font-size: 15px}
+    .step p{margin:0; color: var(--muted); font-size: 13px}
+
+    /* Why + Founder */
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+      align-items:start;
+    }
+    .panel{padding: 22px}
+    .panel h3{margin:0 0 10px; font-size: 18px}
+    .list{
+      margin:0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .list li{margin: 8px 0}
+
+    /* CTA block */
+    .bigCta{
+      margin-top: 18px;
+      padding: 24px;
+      border-radius: 26px;
+      border: 1px solid rgba(14,94,111,.14);
+      background: linear-gradient(135deg, rgba(14,94,111,.12), rgba(168,218,220,.35));
+      box-shadow: var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+    .bigCta strong{font-size: 22px}
+    .bigCta span{display:block; margin-top: 6px; color: var(--muted); font-size: 15px; max-width: 72ch}
+
+    /* Footer */
+    footer{
+      padding: 32px 0 48px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .foot{
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap:wrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero{grid-template-columns: 1fr}
+      h1{font-size: 42px}
+      h2{font-size: 32px}
+      .service{grid-column: span 12}
+      .step{grid-column: span 6}
+      .twoCol{grid-template-columns: 1fr}
+      .navlinks{display:none}
+      .menuBtn{display:inline-flex}
+      .brand img{height: 76px}
+    }
+    @media (max-width: 560px){
+      .wrap{padding:0 18px}
+      .brand img{height: 60px; max-width: 340px}
+      h1{font-size: 36px}
+      .miniGrid{grid-template-columns: 1fr}
+      .step{grid-column: span 12}
+    }
+  </style>
 </head>
-<body style="font-family:system-ui;padding:32px;">
-  <h1>CRA Publisher</h1>
-  <p>Bootstrap page for Netlify Identity.</p>
 
-  <button id="login">Log in</button>
+<body>
+  <header id="siteHeader">
+    <div class="nav">
+      <a class="brand" href="#top" aria-label="Catalyst Ridge Advisory">
+        <img src="catalyst-ridge-logo.png" alt="Catalyst Ridge Advisory logo">
+      </a>
+
+      <div class="navRight">
+        <div class="navlinks" aria-label="Primary navigation (desktop)">
+          <a class="navlink" href="#challenge">The Challenge</a>
+          <a class="navlink" href="#services">Services</a>
+          <a class="navlink" href="#flow">The Cascade Flow</a>
+          <a class="navlink" href="#why">Why Us</a>
+          <a class="navlink" href="#founder">Founder</a>
+        </div>
+
+        <a class="btn primary" href="#contact">Book a Workshop</a>
+
+        <button class="menuBtn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false">
+          <div class="menuIcon" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobilePanel" id="mobilePanel" aria-label="Mobile menu">
+      <div class="mobilePanelInner">
+        <a href="#challenge">The Challenge</a>
+        <a href="#services">Services</a>
+        <a href="#flow">The Cascade Flow</a>
+        <a href="#why">Why Us</a>
+        <a href="#founder">Founder</a>
+        <a class="mobileCta" href="#contact">Book a Workshop</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="wrap">
+
+      <section class="hero" aria-label="Hero">
+        <div>
+          <div class="kicker">Catalyst Ridge Advisory</div>
+          <h1>From AI exploration to intelligent execution.</h1>
+          <p class="sub">
+            Practical, human centered AI strategy for organizations ready to transform curiosity into clarity,
+            clarity into confidence, and confidence into catalyst driven change.
+          </p>
+
+          <div class="ctaRow">
+            <a class="btn primary" href="#contact">Book a Workshop</a>
+            <a class="btn ghost" href="#flow">See Our Approach</a>
+          </div>
+        </div>
+
+        <aside class="card heroCard" aria-label="What you can expect">
+          <div>
+            <h3>What you can expect</h3>
+            <div class="miniGrid">
+              <div class="mini">
+                <strong>Clarity</strong>
+                <span>Know exactly where to start and why.</span>
+              </div>
+              <div class="mini">
+                <strong>Confidence</strong>
+                <span>Teams understand what is changing and how to use it.</span>
+              </div>
+              <div class="mini">
+                <strong>Governance</strong>
+                <span>Guardrails that reduce risk without slowing progress.</span>
+              </div>
+              <div class="mini">
+                <strong>Impact</strong>
+                <span>Measured wins, not vague AI activity.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bigCta" style="padding:16px;">
+            <div>
+              <strong>Ready to begin your cascade?</strong>
+              <span>Start with the readiness workshop and build from there.</span>
+            </div>
+            <a class="btn primary" href="#contact">Contact</a>
+          </div>
+        </aside>
+      </section>
+
+      <section id="challenge" aria-label="The Challenge">
+        <div class="kicker">The Challenge</div>
+        <h2>AI interest is high. Direction is not.</h2>
+        <p class="sub">
+          Most organizations want to use AI, but few know where to start. Without a clear strategy, AI feels unattainable,
+          risky, or irrelevant. Catalyst Ridge Advisory helps leaders bridge the gap between aspiration and action,
+          building systems that align AI with purpose, people, and measurable progress.
+        </p>
+      </section>
+
+      <section id="services" aria-label="Services">
+        <div class="kicker">Our Services</div>
+        <h2>Four ways to work together</h2>
+        <p class="sub">Start where you are. Move at the speed your organization can sustain.</p>
+
+        <div class="grid" role="list">
+          <article class="card service" role="listitem">
+            <h3>AI Readiness Workshop</h3>
+            <p>A 2 hour session to identify practical opportunities and assess your team’s readiness to adopt AI with confidence.</p>
+          </article>
+
+          <article class="card service" role="listitem">
+            <h3>AI Roadmap Advisory</h3>
+            <p>A 90 day plan to design your organization’s next steps with clarity, accountability, and alignment to mission.</p>
+          </article>
+
+          <article class="card service" role="listitem">
+            <h3>Fractional AI Advisor</h3>
+            <p>Ongoing guidance to integrate strategy, systems, and governance for sustainable AI adoption.</p>
+          </article>
+
+          <article class="card service" role="listitem">
+            <h3>Implementation Sprints</h3>
+            <p>Intensive engagements to build, test, and refine AI powered workflows with measurable impact.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="flow" aria-label="The Cascade Flow">
+        <div class="kicker">The Cascade Flow</div>
+        <h2>From curiosity to catalyst</h2>
+        <p class="sub">Each stage builds momentum toward meaningful innovation.</p>
+
+        <div class="flow" role="list">
+          <div class="step" role="listitem">
+            <div class="num">01</div>
+            <h4>Curiosity</h4>
+            <p>Inspire exploration and spark imagination. Understand what’s possible with AI and where it could make the greatest difference.</p>
+          </div>
+
+          <div class="step" role="listitem">
+            <div class="num">02</div>
+            <h4>Clarity</h4>
+            <p>Define the why and the where, identifying the right AI use cases that align with your organization’s mission and goals.</p>
+          </div>
+
+          <div class="step" role="listitem">
+            <div class="num">03</div>
+            <h4>Confidence</h4>
+            <p>Equip your team with understanding, tools, and readiness to move from ideas to practical implementation.</p>
+          </div>
+
+          <div class="step" role="listitem">
+            <div class="num">04</div>
+            <h4>Catalyst</h4>
+            <p>Activate transformation. Implement ethically, measure impact, and continually refine for lasting results.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="why" aria-label="Why Us">
+        <div class="kicker">Why Catalyst Ridge Advisory</div>
+        <h2>Responsible AI that people actually use</h2>
+        <p class="sub">
+          We guide organizations through the AI adoption lifecycle, from first curiosity to confident integration.
+          Our approach blends human insight with data driven strategy to deliver:
+        </p>
+
+        <div class="twoCol">
+          <div class="card panel">
+            <h3>What you get</h3>
+            <ul class="list">
+              <li>Clear, actionable frameworks for responsible AI use.</li>
+              <li>Hands on workshops that build confidence and understanding.</li>
+              <li>Practical guidance from 20 plus years of technology leadership.</li>
+            </ul>
+          </div>
+
+          <div class="card panel">
+            <h3>20 plus Years of Technology Leadership</h3>
+            <p class="sub" style="margin-top:0;">
+              Proven experience bridging strategy, systems, and change.
+            </p>
+            <p class="sub" style="margin-top:10px; font-size:15px;">
+              If you want AI to stick, the work is alignment, governance, operating cadence, and workflow design.
+              That is what we do.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="founder" aria-label="Founder">
+        <div class="kicker">Meet the Founder</div>
+        <h2>Contessa</h2>
+        <p class="sub"><strong>Founder and Principal Advisor</strong></p>
+
+        <div class="card panel" style="margin-top:18px;">
+          <p class="sub" style="margin-top:0;">
+            With over 20 years in technology and operations, Contessa helps organizations align innovation with mission,
+            ethics, and impact. Her leadership blends strategic clarity, operational discipline, and human centered design,
+            helping teams adopt AI responsibly and effectively.
+          </p>
+        </div>
+      </section>
+
+      <section id="contact" aria-label="Contact">
+        <div class="kicker">Call to Action</div>
+        <h2>Ready to begin your cascade?</h2>
+        <p class="sub">
+          Transformation begins with clarity. Identify your opportunities, reduce overwhelm, and take the first confident step toward AI adoption.
+        </p>
+
+        <div class="bigCta">
+          <div>
+            <strong>Book Your Workshop</strong>
+            <span>Update the email and scheduling link below and you are live.</span>
+          </div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a class="btn primary" href="mailto:csiegner@gmail.com?subject=Catalyst%20Ridge%20Advisory%20Workshop">Book Your Workshop</a>
+            <a class="btn ghost" href="https://calendly.com/yourlink" target="_blank" rel="noreferrer">Join Catalyst Ridge Advisory</a>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div class="foot">
+          <div>© <span id="year"></span> Catalyst Ridge Advisory. AI Strategy. Human Insight. Real Impact.</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="#services">Services</a>
+            <span aria-hidden="true">•</span>
+            <a href="#flow">Approach</a>
+            <span aria-hidden="true">•</span>
+            <a href="#contact">Contact</a>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </main>
 
   <script>
-    document.getElementById("login").addEventListener("click", () => {
-      if (window.netlifyIdentity) window.netlifyIdentity.open();
+    // Footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Mobile menu toggle + close on link click
+    const header = document.getElementById("siteHeader");
+    const btn = document.getElementById("menuBtn");
+    const panel = document.getElementById("mobilePanel");
+
+    function closeMenu(){
+      header.classList.remove("isOpen");
+      btn.setAttribute("aria-expanded", "false");
+    }
+
+    btn.addEventListener("click", () => {
+      const isOpen = header.classList.toggle("isOpen");
+      btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
 
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("login", () => {
-        alert("Logged in successfully");
-      });
-    }
+    panel.addEventListener("click", (e) => {
+      const t = e.target;
+      if (t && t.tagName === "A") closeMenu();
+    });
+
+    // Close menu if screen gets larger
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 980) closeMenu();
+    });
   </script>
 </body>
 </html>
+
