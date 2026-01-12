@@ -38,7 +38,6 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       color: var(--slate);
       min-height: 100vh;
-
       background:
         radial-gradient(1200px 700px at 10% 10%, rgba(168,218,220,0.45), transparent 60%),
         radial-gradient(900px 600px at 90% 15%, rgba(255,107,90,0.22), transparent 55%),
@@ -52,8 +51,6 @@
       display:flex; align-items:center; justify-content:space-between;
       gap: 18px; margin-bottom: 18px;
     }
-
-    .brand { display:flex; align-items:center; gap: 14px; }
 
     .brand-text { display:flex; flex-direction:column; line-height:1.1; }
 
@@ -184,13 +181,11 @@
 
     button:hover { border-color: rgba(14,94,111,0.45); box-shadow: var(--shadow-md); }
     button:active { transform: translateY(1px); }
-
     button.primary {
       border-color: rgba(14,94,111,0.55);
       background: linear-gradient(135deg, rgba(14,94,111,0.14), rgba(168,218,220,0.36));
       color: var(--teal-dark);
     }
-
     button:disabled { opacity: 0.55; cursor: not-allowed; box-shadow:none; }
 
     .notice {
@@ -203,7 +198,6 @@
       font-size: 13px;
       display:none;
     }
-
     .notice.ok {
       display:block;
       border-color: rgba(14,94,111,0.35);
@@ -211,7 +205,6 @@
       color: var(--teal-dark);
       font-weight: 700;
     }
-
     .notice.err {
       display:block;
       border-color: rgba(255,107,90,0.35);
@@ -219,7 +212,6 @@
       color: #8B2D24;
       font-weight: 700;
     }
-
     .notice.info { display:block; color: rgba(46,58,70,0.75); }
 
     .mutedHint { margin-top: 10px; font-size: 13px; color: rgba(46,58,70,0.70); }
@@ -227,7 +219,6 @@
     .section-gap { height: 16px; }
 
     .listHeader { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom: 10px; }
-
     .listHeader h2 {
       font-family: var(--heading);
       font-size: 16px;
@@ -235,7 +226,6 @@
       color: var(--teal);
       margin: 0;
     }
-
     #listStatus { font-size: 13px; color: rgba(46,58,70,0.72); margin-top: 6px; }
 
     .listWrap { display:grid; gap:10px; margin-top: 12px; }
@@ -269,9 +259,7 @@
     .dot.yellow { background: rgba(245, 196, 66, 0.98); }
     .dot.red { background: rgba(255, 107, 90, 0.95); }
 
-    .rowText {
-      min-width: 0;
-    }
+    .rowText { min-width: 0; }
 
     .rowName {
       font-family: var(--mono);
@@ -302,7 +290,6 @@
       border: 1px solid rgba(14,94,111,0.22);
       background: rgba(168,218,220,0.22);
     }
-
     a.viewBtn:hover {
       border-color: rgba(14,94,111,0.40);
       background: rgba(168,218,220,0.30);
@@ -321,7 +308,6 @@
       color: #8B2D24;
     }
 
-    /* gated UI */
     #app { display:none; }
     #gate { display:block; margin-top: 14px; }
   </style>
@@ -330,11 +316,9 @@
 <body>
   <div class="container">
     <header>
-      <div class="brand">
-        <div class="brand-text">
-          <div class="brand-title">Catalyst Ridge Advisory</div>
-          <div class="brand-sub">Internal Publisher Tool</div>
-        </div>
+      <div class="brand-text">
+        <div class="brand-title">Catalyst Ridge Advisory</div>
+        <div class="brand-sub">Internal Publisher Tool</div>
       </div>
 
       <div class="topbar-right">
@@ -403,9 +387,14 @@
   <script>
     function $(id) { return document.getElementById(id); }
 
-    // Session-scoped status cache:
     // slug -> { state: "yellow"|"green"|"red", at: epochMs, msg?: string }
     const statusBySlug = new Map();
+
+    // Current list of pages rendered (slug + url)
+    let currentPages = [];
+
+    const CACHE_KEY = "cra_pages_cache_v1";
+    const CACHE_AT_KEY = "cra_pages_cache_at_v1";
 
     function nowMs() { return Date.now(); }
 
@@ -489,17 +478,14 @@
       const entry = statusBySlug.get(slug);
       if (!entry) return { cls: "green", meta: "" };
 
-      if (entry.state === "yellow") {
-        return { cls: "yellow", meta: "Publishing..." };
-      }
-      if (entry.state === "red") {
-        return { cls: "red", meta: entry.msg ? ("Failed: " + entry.msg) : "Failed" };
-      }
-      // green
+      if (entry.state === "yellow") return { cls: "yellow", meta: "Publishing..." };
+      if (entry.state === "red") return { cls: "red", meta: entry.msg ? ("Failed: " + entry.msg) : "Failed" };
       return { cls: "green", meta: formatWhen(entry.at) };
     }
 
     function renderList(pages) {
+      currentPages = pages.slice();
+
       const list = $("list");
       list.innerHTML = "";
 
@@ -509,6 +495,7 @@
 
         const row = document.createElement("div");
         row.className = "row";
+        row.dataset.slug = slug;
 
         const left = document.createElement("div");
         left.className = "rowLeft";
@@ -569,7 +556,7 @@
 
             statusBySlug.delete(slug);
             setNotice("ok", `Deleted: /cra/${slug}`);
-            await loadPages();
+            await loadPages(true);
           } catch (e) {
             setNotice("err", "Delete failed: " + (e && e.message ? e.message : String(e)));
           } finally {
@@ -582,41 +569,80 @@
 
         row.appendChild(left);
         row.appendChild(actions);
-
         list.appendChild(row);
+      }
+
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(pages));
+        localStorage.setItem(CACHE_AT_KEY, String(nowMs()));
+      } catch (e) {
+        // ignore storage failures
       }
     }
 
-    async function loadPages() {
-      $("listStatus").textContent = "Loading...";
-      $("list").innerHTML = "";
-      setNotice("", "");
+    function updateRowMetaOnly() {
+      // No network, just update dots + meta text for current rendered list.
+      for (const p of currentPages) {
+        const slug = p.slug;
+        const row = document.querySelector('.row[data-slug="' + CSS.escape(slug) + '"]');
+        if (!row) continue;
+
+        const dot = row.querySelector(".dot");
+        const meta = row.querySelector(".rowMeta");
+        if (!dot || !meta) continue;
+
+        const d = dotFor(slug);
+        dot.className = "dot " + d.cls;
+        meta.textContent = d.meta || (d.cls === "yellow" ? "Publishing..." : "Published");
+      }
+    }
+
+    function mergeInProgressRows(pages) {
+      // If we have yellow/red items not in the fetched list yet, keep them at top.
+      const set = new Set(pages.map(p => p.slug));
+      const extras = [];
+      for (const [slug, entry] of statusBySlug.entries()) {
+        if (entry.state === "yellow" || entry.state === "red") {
+          if (!set.has(slug)) {
+            extras.push({ slug, url: "/cra/" + slug });
+          }
+        }
+      }
+      // Put extras at top
+      return extras.concat(pages);
+    }
+
+    async function loadPages(isManual) {
+      const statusEl = $("listStatus");
+
+      // Do NOT clear the list. Just show status text.
+      statusEl.textContent = isManual ? "Refreshing..." : "Updating...";
 
       let payload;
       try {
         payload = await fetchJson("/.netlify/functions/list-pages", { method: "GET", credentials: "include" });
       } catch (e) {
-        $("listStatus").textContent = "Could not load list.";
+        statusEl.textContent = "Could not refresh list.";
         setNotice("err", "List failed: " + (e && e.message ? e.message : String(e)));
         return;
       }
 
       const data = payload.data;
-      const pages = normalizePagesResponse(data);
+      const pagesRaw = normalizePagesResponse(data);
 
-      if (!pages.length) {
+      if (!pagesRaw.length) {
         if (data && data.ok === false) {
-          $("listStatus").textContent = "List unavailable.";
+          statusEl.textContent = "List unavailable.";
           setNotice("err", "List failed: " + (data.error ? data.error : "Unknown error"));
           return;
         }
-        $("listStatus").textContent = "No pages yet.";
+        statusEl.textContent = "No pages yet.";
+        renderList(mergeInProgressRows([]));
         return;
       }
 
-      // Any slug that exists in the list is "published".
-      // If we have it as yellow, flip it to green and keep its timestamp.
-      for (const p of pages) {
+      // Anything that exists in the list is "published". Flip yellow -> green.
+      for (const p of pagesRaw) {
         const slug = p.slug;
         const entry = statusBySlug.get(slug);
         if (entry && entry.state === "yellow") {
@@ -624,8 +650,8 @@
         }
       }
 
-      $("listStatus").textContent = "";
-      renderList(pages);
+      statusEl.textContent = "";
+      renderList(mergeInProgressRows(pagesRaw));
     }
 
     async function publish() {
@@ -642,12 +668,17 @@
       $("publishBtn").disabled = true;
       setNotice("info", "Publishing...");
 
-      // Mark as in progress immediately (yellow).
-      statusBySlug.set(slug, { state: "yellow", at: nowMs() });
+      // Yellow immediately
+      const startedAt = nowMs();
+      statusBySlug.set(slug, { state: "yellow", at: startedAt });
 
-      // Best effort: show it in the list immediately if it already exists in DOM
-      // by triggering a refresh after setting yellow.
-      // If the slug is not in the current list, it'll show as green once the list refresh includes it.
+      // Ensure it shows instantly, even if not in list yet
+      if (!currentPages.find(p => p.slug === slug)) {
+        renderList([{ slug, url: "/cra/" + slug }].concat(currentPages));
+      } else {
+        updateRowMetaOnly();
+      }
+
       try {
         const payload = await fetchJson("/.netlify/functions/publish", {
           method: "POST",
@@ -663,16 +694,16 @@
         const commit = data.commit || "(unknown)";
         setNotice("ok", `Published: ${url}\nCommit: ${commit}`);
 
-        // Flip to green now (we will still refresh list to confirm)
-        const t = statusBySlug.get(slug);
-        statusBySlug.set(slug, { state: "green", at: (t && t.at) ? t.at : nowMs() });
+        // Green immediately, then fetch list to confirm ordering
+        statusBySlug.set(slug, { state: "green", at: startedAt });
+        updateRowMetaOnly();
 
-        await loadPages();
+        await loadPages(false);
         document.querySelector(".listHeader").scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (e) {
         statusBySlug.set(slug, { state: "red", at: nowMs(), msg: (e && e.message) ? e.message : String(e) });
         setNotice("err", "Publish failed: " + (e && e.message ? e.message : String(e)));
-        await loadPages();
+        updateRowMetaOnly();
       } finally {
         $("publishBtn").disabled = false;
       }
@@ -688,20 +719,27 @@
     function wireApp() {
       $("publishBtn").addEventListener("click", publish);
       $("clearBtn").addEventListener("click", clearForm);
-      $("refreshBtn").addEventListener("click", loadPages);
+      $("refreshBtn").addEventListener("click", () => loadPages(true));
 
-      loadPages();
-
-      // Refresh timestamps every 20 seconds so "just now" becomes "1 min ago"
-      setInterval(() => {
-        // re-render if list has content
-        if ($("list").children.length > 0) {
-          // We do not have the pages array here, so reload list only if you care.
-          // Instead, simple approach: trigger loadPages occasionally.
-          // This keeps things accurate without complexity.
-          loadPages();
+      // Instant render from cache (perceived performance)
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const pages = JSON.parse(cached);
+          if (Array.isArray(pages) && pages.length) {
+            $("listStatus").textContent = "Loaded from cache. Updating...";
+            renderList(mergeInProgressRows(pages));
+          }
         }
-      }, 20000);
+      } catch (e) {
+        // ignore
+      }
+
+      // Then fetch real list in background
+      loadPages(false);
+
+      // Update timestamps locally, no network
+      setInterval(updateRowMetaOnly, 10000);
     }
 
     function bootAuthGate() {
@@ -739,4 +777,3 @@
   </script>
 </body>
 </html>
-
