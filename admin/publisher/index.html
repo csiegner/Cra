@@ -241,12 +241,36 @@
     .listWrap { display:grid; gap:10px; margin-top: 12px; }
 
     .row {
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
       padding: 10px 12px;
       border-radius: 16px;
       border: 1px solid rgba(46,58,70,0.16);
       background: rgba(248,249,250,0.94);
       box-shadow: 0 10px 26px rgba(16,32,39,0.08);
+    }
+
+    .rowLeft {
+      display:flex;
+      align-items:flex-start;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      margin-top: 6px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(16,32,39,0.18);
+      box-shadow: 0 6px 14px rgba(16,32,39,0.10);
+    }
+    .dot.green { background: rgba(46, 184, 92, 0.95); }
+    .dot.yellow { background: rgba(245, 196, 66, 0.98); }
+    .dot.red { background: rgba(255, 107, 90, 0.95); }
+
+    .rowText {
+      min-width: 0;
     }
 
     .rowName {
@@ -256,8 +280,14 @@
       overflow:hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      max-width: 62%;
-      font-weight: 700;
+      max-width: 620px;
+      font-weight: 800;
+    }
+
+    .rowMeta {
+      margin-top: 4px;
+      font-size: 12px;
+      color: rgba(46,58,70,0.72);
     }
 
     .rowActions { display:inline-flex; align-items:center; gap:10px; flex-shrink:0; }
@@ -293,10 +323,7 @@
 
     /* gated UI */
     #app { display:none; }
-    #gate {
-      display:block;
-      margin-top: 14px;
-    }
+    #gate { display:block; margin-top: 14px; }
   </style>
 </head>
 
@@ -346,7 +373,7 @@
           <div id="notice" class="notice info"></div>
 
           <div class="mutedHint">
-            Tip: paste a full HTML document, including doctype.
+            Dot status: yellow means publishing, green means published, red means failed.
           </div>
         </div>
 
@@ -376,6 +403,26 @@
   <script>
     function $(id) { return document.getElementById(id); }
 
+    // Session-scoped status cache:
+    // slug -> { state: "yellow"|"green"|"red", at: epochMs, msg?: string }
+    const statusBySlug = new Map();
+
+    function nowMs() { return Date.now(); }
+
+    function formatWhen(epochMs) {
+      if (!epochMs) return "";
+      const diff = nowMs() - epochMs;
+      const s = Math.floor(diff / 1000);
+      if (s < 10) return "Published just now";
+      if (s < 60) return "Published " + s + " sec ago";
+      const m = Math.floor(s / 60);
+      if (m < 60) return "Published " + m + " min ago";
+      const h = Math.floor(m / 60);
+      if (h < 24) return "Published " + h + " hr ago";
+      const d = new Date(epochMs);
+      return "Published " + d.toLocaleString();
+    }
+
     function showGate(msg) {
       $("gateNotice").className = "notice info";
       $("gateNotice").textContent = msg || "Loading...";
@@ -403,8 +450,8 @@
 
     function toLogin(msgKey) {
       const next = window.location.pathname + window.location.search;
-      const url = new URL("/admin/publisher/login.html", window.location.origin);
-      url.searchParams.set("next", next || "/admin/publisher/");
+      const url = new URL("/admin/login.html", window.location.origin);
+      url.searchParams.set("next", next || "/admin/publisher/index.html");
       if (msgKey) url.searchParams.set("msg", msgKey);
       window.location.href = url.toString();
     }
@@ -438,34 +485,24 @@
       who.textContent = email ? ("Signed in: " + email) : "Signed in";
     }
 
-    async function loadPages() {
-      $("listStatus").textContent = "Loading...";
-      $("list").innerHTML = "";
-      setNotice("", "");
+    function dotFor(slug) {
+      const entry = statusBySlug.get(slug);
+      if (!entry) return { cls: "green", meta: "" };
 
-      let payload;
-      try {
-        payload = await fetchJson("/.netlify/functions/list-pages", { method: "GET", credentials: "include" });
-      } catch (e) {
-        $("listStatus").textContent = "Could not load list.";
-        setNotice("err", "List failed: " + (e && e.message ? e.message : String(e)));
-        return;
+      if (entry.state === "yellow") {
+        return { cls: "yellow", meta: "Publishing..." };
       }
-
-      const data = payload.data;
-      const pages = normalizePagesResponse(data);
-
-      if (!pages.length) {
-        if (data && data.ok === false) {
-          $("listStatus").textContent = "List unavailable.";
-          setNotice("err", "List failed: " + (data.error ? data.error : "Unknown error"));
-          return;
-        }
-        $("listStatus").textContent = "No pages yet.";
-        return;
+      if (entry.state === "red") {
+        return { cls: "red", meta: entry.msg ? ("Failed: " + entry.msg) : "Failed" };
       }
+      // green
+      return { cls: "green", meta: formatWhen(entry.at) };
+    }
 
-      $("listStatus").textContent = "";
+    function renderList(pages) {
+      const list = $("list");
+      list.innerHTML = "";
+
       for (const p of pages) {
         const slug = p.slug || "";
         const url = p.url || ("/cra/" + slug);
@@ -473,9 +510,30 @@
         const row = document.createElement("div");
         row.className = "row";
 
+        const left = document.createElement("div");
+        left.className = "rowLeft";
+
+        const dot = document.createElement("div");
+        const d = dotFor(slug);
+        dot.className = "dot " + d.cls;
+        dot.title = d.cls === "green" ? "Published" : d.cls === "yellow" ? "Publishing" : "Failed";
+
+        const txt = document.createElement("div");
+        txt.className = "rowText";
+
         const name = document.createElement("div");
         name.className = "rowName";
         name.textContent = slug;
+
+        const meta = document.createElement("div");
+        meta.className = "rowMeta";
+        meta.textContent = d.meta || "Published";
+
+        txt.appendChild(name);
+        txt.appendChild(meta);
+
+        left.appendChild(dot);
+        left.appendChild(txt);
 
         const actions = document.createElement("div");
         actions.className = "rowActions";
@@ -508,6 +566,8 @@
 
             const j = payload2.data;
             if (!j || !j.ok) throw new Error((j && j.error) ? j.error : "Delete failed");
+
+            statusBySlug.delete(slug);
             setNotice("ok", `Deleted: /cra/${slug}`);
             await loadPages();
           } catch (e) {
@@ -520,11 +580,52 @@
         actions.appendChild(view);
         actions.appendChild(del);
 
-        row.appendChild(name);
+        row.appendChild(left);
         row.appendChild(actions);
 
-        $("list").appendChild(row);
+        list.appendChild(row);
       }
+    }
+
+    async function loadPages() {
+      $("listStatus").textContent = "Loading...";
+      $("list").innerHTML = "";
+      setNotice("", "");
+
+      let payload;
+      try {
+        payload = await fetchJson("/.netlify/functions/list-pages", { method: "GET", credentials: "include" });
+      } catch (e) {
+        $("listStatus").textContent = "Could not load list.";
+        setNotice("err", "List failed: " + (e && e.message ? e.message : String(e)));
+        return;
+      }
+
+      const data = payload.data;
+      const pages = normalizePagesResponse(data);
+
+      if (!pages.length) {
+        if (data && data.ok === false) {
+          $("listStatus").textContent = "List unavailable.";
+          setNotice("err", "List failed: " + (data.error ? data.error : "Unknown error"));
+          return;
+        }
+        $("listStatus").textContent = "No pages yet.";
+        return;
+      }
+
+      // Any slug that exists in the list is "published".
+      // If we have it as yellow, flip it to green and keep its timestamp.
+      for (const p of pages) {
+        const slug = p.slug;
+        const entry = statusBySlug.get(slug);
+        if (entry && entry.state === "yellow") {
+          statusBySlug.set(slug, { state: "green", at: entry.at || nowMs() });
+        }
+      }
+
+      $("listStatus").textContent = "";
+      renderList(pages);
     }
 
     async function publish() {
@@ -541,6 +642,12 @@
       $("publishBtn").disabled = true;
       setNotice("info", "Publishing...");
 
+      // Mark as in progress immediately (yellow).
+      statusBySlug.set(slug, { state: "yellow", at: nowMs() });
+
+      // Best effort: show it in the list immediately if it already exists in DOM
+      // by triggering a refresh after setting yellow.
+      // If the slug is not in the current list, it'll show as green once the list refresh includes it.
       try {
         const payload = await fetchJson("/.netlify/functions/publish", {
           method: "POST",
@@ -556,10 +663,16 @@
         const commit = data.commit || "(unknown)";
         setNotice("ok", `Published: ${url}\nCommit: ${commit}`);
 
+        // Flip to green now (we will still refresh list to confirm)
+        const t = statusBySlug.get(slug);
+        statusBySlug.set(slug, { state: "green", at: (t && t.at) ? t.at : nowMs() });
+
         await loadPages();
         document.querySelector(".listHeader").scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (e) {
+        statusBySlug.set(slug, { state: "red", at: nowMs(), msg: (e && e.message) ? e.message : String(e) });
         setNotice("err", "Publish failed: " + (e && e.message ? e.message : String(e)));
+        await loadPages();
       } finally {
         $("publishBtn").disabled = false;
       }
@@ -578,6 +691,17 @@
       $("refreshBtn").addEventListener("click", loadPages);
 
       loadPages();
+
+      // Refresh timestamps every 20 seconds so "just now" becomes "1 min ago"
+      setInterval(() => {
+        // re-render if list has content
+        if ($("list").children.length > 0) {
+          // We do not have the pages array here, so reload list only if you care.
+          // Instead, simple approach: trigger loadPages occasionally.
+          // This keeps things accurate without complexity.
+          loadPages();
+        }
+      }, 20000);
     }
 
     function bootAuthGate() {
@@ -586,7 +710,6 @@
         return;
       }
 
-      // Wait for init to complete before deciding.
       window.netlifyIdentity.on("init", (user) => {
         if (!user) {
           toLogin("please-login");
@@ -600,7 +723,6 @@
           toLogin("logged-out");
         });
 
-        // Switch UI from gate to app
         $("gate").style.display = "none";
         $("app").style.display = "block";
 
@@ -617,3 +739,4 @@
   </script>
 </body>
 </html>
+
