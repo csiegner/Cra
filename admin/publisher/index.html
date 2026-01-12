@@ -11,13 +11,13 @@
 
   <style>
     :root{
-      --teal: #0E5E6F;
-      --teal-dark: #0B4B59;
-      --coral: #FF6B5A;
-      --sky: #A8DADC;
-      --slate: #2E3A46;
-      --ink: #102027;
-      --white: #F8F9FA;
+      --teal:#0E5E6F;
+      --teal-dark:#0B4B59;
+      --coral:#FF6B5A;
+      --sky:#A8DADC;
+      --slate:#2E3A46;
+      --ink:#102027;
+      --white:#F8F9FA;
 
       --border: rgba(46,58,70,0.16);
       --shadow-lg: 0 24px 60px rgba(16,32,39,0.14);
@@ -30,14 +30,14 @@
       --heading: "Montserrat", system-ui, sans-serif;
     }
 
-    * { box-sizing: border-box; }
+    *{box-sizing:border-box}
 
-    body {
-      margin: 0;
-      padding: 28px;
+    body{
+      margin:0;
+      padding:28px;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      color: var(--slate);
-      min-height: 100vh;
+      color:var(--slate);
+      min-height:100vh;
       background:
         radial-gradient(1200px 700px at 10% 10%, rgba(168,218,220,0.45), transparent 60%),
         radial-gradient(900px 600px at 90% 15%, rgba(255,107,90,0.22), transparent 55%),
@@ -45,271 +45,211 @@
         var(--white);
     }
 
-    .container { max-width: 1180px; margin: 0 auto; }
+    .container{max-width:1180px;margin:0 auto}
 
-    header {
-      display:flex; align-items:center; justify-content:space-between;
-      gap: 18px; margin-bottom: 18px;
-    }
+    header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
 
-    .brand-text { display:flex; flex-direction:column; line-height:1.1; }
+    .brand-text{display:flex;flex-direction:column;line-height:1.1}
+    .brand-title{font-family:var(--heading);font-weight:900;font-size:18px;color:var(--teal);letter-spacing:.2px}
+    .brand-sub{font-size:12px;color:rgba(46,58,70,0.75);margin-top:2px}
 
-    .brand-title {
-      font-family: var(--heading);
-      font-weight: 900;
-      font-size: 18px;
-      color: var(--teal);
-      letter-spacing: 0.2px;
-    }
-
-    .brand-sub {
-      font-size: 12px;
-      color: rgba(46,58,70,0.75);
-      margin-top: 2px;
-    }
-
-    .topbar-right {
-      display:flex; align-items:center; gap: 10px;
-      flex-wrap: wrap; justify-content:flex-end;
-    }
-
-    .pill {
+    .topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .pill{
       display:inline-block;
-      padding: 2px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(14,94,111,0.25);
-      background: rgba(168,218,220,0.28);
-      color: var(--teal);
-      font-size: 12px;
-      font-weight: 700;
+      padding:2px 10px;
+      border-radius:999px;
+      border:1px solid rgba(14,94,111,0.25);
+      background:rgba(168,218,220,0.28);
+      color:var(--teal);
+      font-size:12px;
+      font-weight:700;
+    }
+    .who{font-size:12px;color:rgba(46,58,70,0.70)}
+
+    h1{font-family:var(--heading);font-size:22px;font-weight:900;margin:0;color:var(--teal-dark)}
+    .sub{margin-top:6px;font-size:13px;color:rgba(46,58,70,0.75)}
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1.15fr;
+      gap:16px;
+      margin-top:14px;
+    }
+    @media (max-width: 900px){
+      body{padding:18px}
+      .grid{grid-template-columns:1fr}
     }
 
-    .who { font-size: 12px; color: rgba(46,58,70,0.70); }
-
-    h1 {
-      font-family: var(--heading);
-      font-size: 22px;
-      font-weight: 900;
-      margin: 0;
-      color: var(--teal-dark);
-    }
-
-    .sub { margin-top: 6px; font-size: 13px; color: rgba(46,58,70,0.75); }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1.15fr;
-      gap: 16px;
-      margin-top: 14px;
-    }
-
-    @media (max-width: 900px) {
-      body { padding: 18px; }
-      .grid { grid-template-columns: 1fr; }
-    }
-
-    .card {
-      background: rgba(248,249,250,0.90);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-      box-shadow: var(--shadow-lg);
+    .card{
+      background:rgba(248,249,250,0.90);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:18px;
+      box-shadow:var(--shadow-lg);
       backdrop-filter: blur(8px);
     }
 
-    label {
-      display:block;
-      font-size: 12px;
-      font-weight: 700;
-      color: rgba(46,58,70,0.85);
-      margin-bottom: 6px;
-    }
+    label{display:block;font-size:12px;font-weight:700;color:rgba(46,58,70,0.85);margin-bottom:6px}
 
-    input[type="text"] {
+    input[type="text"]{
       width:100%;
-      padding: 11px 12px;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(46,58,70,0.22);
-      background: rgba(248,249,250,0.98);
-      color: var(--ink);
-      outline: none;
-      font-family: var(--mono);
-      font-size: 13px;
+      padding:11px 12px;
+      border-radius:var(--radius-md);
+      border:1px solid rgba(46,58,70,0.22);
+      background:rgba(248,249,250,0.98);
+      color:var(--ink);
+      outline:none;
+      font-family:var(--mono);
+      font-size:13px;
     }
 
-    textarea {
+    textarea{
       width:100%;
-      min-height: 420px;
-      padding: 12px;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(46,58,70,0.22);
-      background: rgba(248,249,250,0.98);
-      color: var(--ink);
-      outline: none;
-      resize: vertical;
-      font-family: var(--mono);
-      font-size: 13px;
-      line-height: 1.45;
+      min-height:420px;
+      padding:12px;
+      border-radius:var(--radius-md);
+      border:1px solid rgba(46,58,70,0.22);
+      background:rgba(248,249,250,0.98);
+      color:var(--ink);
+      outline:none;
+      resize:vertical;
+      font-family:var(--mono);
+      font-size:13px;
+      line-height:1.45;
     }
 
-    input[type="text"]:focus,
-    textarea:focus {
-      border-color: rgba(14,94,111,0.55);
-      box-shadow: 0 0 0 4px rgba(168,218,220,0.35);
+    input[type="text"]:focus,textarea:focus{
+      border-color:rgba(14,94,111,0.55);
+      box-shadow:0 0 0 4px rgba(168,218,220,0.35);
     }
 
-    .rowline { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+    .rowline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .check{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:rgba(46,58,70,0.75)}
 
-    .check {
-      display:inline-flex; align-items:center; gap:8px;
-      font-size: 13px; font-weight: 600;
-      color: rgba(46,58,70,0.75);
-    }
-
-    button {
+    button{
       appearance:none;
-      border-radius: 14px;
-      padding: 10px 14px;
-      border: 1px solid rgba(46,58,70,0.22);
-      background: rgba(248,249,250,0.95);
-      color: var(--slate);
+      border-radius:14px;
+      padding:10px 14px;
+      border:1px solid rgba(46,58,70,0.22);
+      background:rgba(248,249,250,0.95);
+      color:var(--slate);
       cursor:pointer;
-      font-weight: 800;
-      font-size: 13px;
+      font-weight:800;
+      font-size:13px;
       transition: transform 0.05s ease, box-shadow 0.15s ease, border-color 0.15s ease;
     }
-
-    button:hover { border-color: rgba(14,94,111,0.45); box-shadow: var(--shadow-md); }
-    button:active { transform: translateY(1px); }
-    button.primary {
-      border-color: rgba(14,94,111,0.55);
-      background: linear-gradient(135deg, rgba(14,94,111,0.14), rgba(168,218,220,0.36));
-      color: var(--teal-dark);
+    button:hover{border-color:rgba(14,94,111,0.45);box-shadow:var(--shadow-md)}
+    button:active{transform:translateY(1px)}
+    button.primary{
+      border-color:rgba(14,94,111,0.55);
+      background:linear-gradient(135deg, rgba(14,94,111,0.14), rgba(168,218,220,0.36));
+      color:var(--teal-dark);
     }
-    button:disabled { opacity: 0.55; cursor: not-allowed; box-shadow:none; }
+    button:disabled{opacity:0.55;cursor:not-allowed;box-shadow:none}
 
-    .notice {
-      margin-top: 14px;
-      border-radius: var(--radius-md);
-      padding: 12px;
-      border: 1px solid rgba(46,58,70,0.18);
-      background: rgba(248,249,250,0.98);
-      white-space: pre-wrap;
-      font-size: 13px;
+    .notice{
+      margin-top:14px;
+      border-radius:var(--radius-md);
+      padding:12px;
+      border:1px solid rgba(46,58,70,0.18);
+      background:rgba(248,249,250,0.98);
+      white-space:pre-wrap;
+      font-size:13px;
       display:none;
     }
-    .notice.ok {
+    .notice.ok{
       display:block;
-      border-color: rgba(14,94,111,0.35);
-      background: rgba(168,218,220,0.28);
-      color: var(--teal-dark);
-      font-weight: 700;
+      border-color:rgba(14,94,111,0.35);
+      background:rgba(168,218,220,0.28);
+      color:var(--teal-dark);
+      font-weight:700;
     }
-    .notice.err {
+    .notice.err{
       display:block;
-      border-color: rgba(255,107,90,0.35);
-      background: rgba(255,107,90,0.14);
-      color: #8B2D24;
-      font-weight: 700;
+      border-color:rgba(255,107,90,0.35);
+      background:rgba(255,107,90,0.14);
+      color:#8B2D24;
+      font-weight:700;
     }
-    .notice.info { display:block; color: rgba(46,58,70,0.75); }
+    .notice.info{display:block;color:rgba(46,58,70,0.75)}
+    .mutedHint{margin-top:10px;font-size:13px;color:rgba(46,58,70,0.70)}
 
-    .mutedHint { margin-top: 10px; font-size: 13px; color: rgba(46,58,70,0.70); }
+    .section-gap{height:16px}
 
-    .section-gap { height: 16px; }
-
-    .listHeader { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom: 10px; }
-    .listHeader h2 {
-      font-family: var(--heading);
-      font-size: 16px;
-      font-weight: 900;
-      color: var(--teal);
-      margin: 0;
+    .listHeader{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .listHeader h2{
+      font-family:var(--heading);
+      font-size:16px;
+      font-weight:900;
+      color:var(--teal);
+      margin:0;
     }
-    #listStatus { font-size: 13px; color: rgba(46,58,70,0.72); margin-top: 6px; }
+    #listStatus{font-size:13px;color:rgba(46,58,70,0.72);margin-top:6px}
 
-    .listWrap { display:grid; gap:10px; margin-top: 12px; }
+    .listWrap{display:grid;gap:10px;margin-top:12px}
 
-    .row {
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(46,58,70,0.16);
-      background: rgba(248,249,250,0.94);
-      box-shadow: 0 10px 26px rgba(16,32,39,0.08);
-    }
-
-    .rowLeft {
+    .row{
       display:flex;
       align-items:flex-start;
-      gap: 10px;
-      min-width: 0;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(46,58,70,0.16);
+      background:rgba(248,249,250,0.94);
+      box-shadow:0 10px 26px rgba(16,32,39,0.08);
     }
 
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      margin-top: 6px;
-      flex: 0 0 auto;
-      border: 1px solid rgba(16,32,39,0.18);
-      box-shadow: 0 6px 14px rgba(16,32,39,0.10);
+    .rowLeft{display:flex;align-items:flex-start;gap:10px;min-width:0}
+    .dot{
+      width:10px;height:10px;border-radius:999px;margin-top:6px;flex:0 0 auto;
+      border:1px solid rgba(16,32,39,0.18);
+      box-shadow:0 6px 14px rgba(16,32,39,0.10);
     }
-    .dot.green { background: rgba(46, 184, 92, 0.95); }
-    .dot.yellow { background: rgba(245, 196, 66, 0.98); }
-    .dot.red { background: rgba(255, 107, 90, 0.95); }
+    .dot.green{background:rgba(46,184,92,0.95)}
+    .dot.yellow{background:rgba(245,196,66,0.98)}
+    .dot.red{background:rgba(255,107,90,0.95)}
 
-    .rowText { min-width: 0; }
-
-    .rowName {
-      font-family: var(--mono);
-      font-size: 13px;
-      color: var(--ink);
+    .rowText{min-width:0}
+    .rowName{
+      font-family:var(--mono);
+      font-size:13px;
+      color:var(--ink);
       overflow:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 620px;
-      font-weight: 800;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width:620px;
+      font-weight:800;
     }
+    .rowMeta{margin-top:4px;font-size:12px;color:rgba(46,58,70,0.72)}
 
-    .rowMeta {
-      margin-top: 4px;
-      font-size: 12px;
-      color: rgba(46,58,70,0.72);
-    }
+    .rowActions{display:inline-flex;align-items:center;gap:10px;flex-shrink:0}
 
-    .rowActions { display:inline-flex; align-items:center; gap:10px; flex-shrink:0; }
-
-    a.viewBtn {
-      color: var(--teal-dark);
+    a.viewBtn{
+      color:var(--teal-dark);
       text-decoration:none;
-      font-weight: 900;
-      font-size: 13px;
-      padding: 8px 10px;
-      border-radius: 14px;
-      border: 1px solid rgba(14,94,111,0.22);
-      background: rgba(168,218,220,0.22);
+      font-weight:900;
+      font-size:13px;
+      padding:8px 10px;
+      border-radius:14px;
+      border:1px solid rgba(14,94,111,0.22);
+      background:rgba(168,218,220,0.22);
     }
-    a.viewBtn:hover {
-      border-color: rgba(14,94,111,0.40);
-      background: rgba(168,218,220,0.30);
-    }
-
-    .trash {
-      width: 44px;
-      height: 38px;
-      padding: 0;
-      border-radius: 14px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border: 1px solid rgba(255,107,90,0.45);
-      background: rgba(255,107,90,0.12);
-      color: #8B2D24;
+    a.viewBtn:hover{
+      border-color:rgba(14,94,111,0.40);
+      background:rgba(168,218,220,0.30);
     }
 
-    #app { display:none; }
-    #gate { display:block; margin-top: 14px; }
+    .trash{
+      width:44px;height:38px;padding:0;border-radius:14px;
+      display:inline-flex;align-items:center;justify-content:center;
+      border:1px solid rgba(255,107,90,0.45);
+      background:rgba(255,107,90,0.12);
+      color:#8B2D24;
+    }
+
+    #app{display:none}
+    #gate{display:block;margin-top:14px}
   </style>
 </head>
 
@@ -357,7 +297,7 @@
           <div id="notice" class="notice info"></div>
 
           <div class="mutedHint">
-            Dot status: yellow means publishing, green means published, red means failed.
+            Yellow means deploying. Green means live.
           </div>
         </div>
 
@@ -385,41 +325,50 @@
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <script>
-    function $(id) { return document.getElementById(id); }
+    function $(id){return document.getElementById(id);}
 
-    // slug -> { state: "yellow"|"green"|"red", at: epochMs, msg?: string }
+    // slug -> { state: "yellow"|"green"|"red", at: epochMs, msg?: string, url?: string }
     const statusBySlug = new Map();
-
-    // Current list of pages rendered (slug + url)
     let currentPages = [];
 
-    const CACHE_KEY = "cra_pages_cache_v1";
-    const CACHE_AT_KEY = "cra_pages_cache_at_v1";
+    const CACHE_KEY = "cra_pages_cache_v2";
 
-    function nowMs() { return Date.now(); }
+    function nowMs(){return Date.now();}
 
-    function formatWhen(epochMs) {
+    function normalizeSlug(input){
+      const raw = String(input || "").trim();
+      if (!raw) return "";
+      if (!raw.includes(".")) return raw + ".html";
+      return raw;
+    }
+
+    function pageUrlForSlug(slug){
+      const s = normalizeSlug(slug);
+      return "/cra/" + s;
+    }
+
+    function formatWhen(epochMs){
       if (!epochMs) return "";
       const diff = nowMs() - epochMs;
       const s = Math.floor(diff / 1000);
-      if (s < 10) return "Published just now";
-      if (s < 60) return "Published " + s + " sec ago";
+      if (s < 10) return "Live just now";
+      if (s < 60) return "Live " + s + " sec ago";
       const m = Math.floor(s / 60);
-      if (m < 60) return "Published " + m + " min ago";
+      if (m < 60) return "Live " + m + " min ago";
       const h = Math.floor(m / 60);
-      if (h < 24) return "Published " + h + " hr ago";
+      if (h < 24) return "Live " + h + " hr ago";
       const d = new Date(epochMs);
-      return "Published " + d.toLocaleString();
+      return "Live " + d.toLocaleString();
     }
 
-    function showGate(msg) {
+    function showGate(msg){
       $("gateNotice").className = "notice info";
       $("gateNotice").textContent = msg || "Loading...";
     }
 
-    function setNotice(kind, msg) {
+    function setNotice(kind, msg){
       const box = $("notice");
-      if (!msg) {
+      if (!msg){
         box.className = "notice info";
         box.textContent = "";
         box.style.display = "none";
@@ -430,14 +379,7 @@
       box.className = "notice " + (kind === "ok" ? "ok" : kind === "err" ? "err" : "info");
     }
 
-    function normalizeSlug(input) {
-      const raw = String(input || "").trim();
-      if (!raw) return "";
-      if (!raw.includes(".")) return raw + ".html";
-      return raw;
-    }
-
-    function toLogin(msgKey) {
+    function toLogin(msgKey){
       const next = window.location.pathname + window.location.search;
       const url = new URL("/admin/login.html", window.location.origin);
       url.searchParams.set("next", next || "/admin/publisher/index.html");
@@ -445,20 +387,19 @@
       window.location.href = url.toString();
     }
 
-    async function fetchJson(url, options) {
+    async function fetchJson(url, options){
       const res = await fetch(url, options);
-      if (res.status === 401) {
+      if (res.status === 401){
         toLogin("session-expired");
         throw new Error("Not authenticated");
       }
       let data;
-      try { data = await res.json(); }
-      catch { throw new Error("Invalid JSON response"); }
+      try{data = await res.json();}catch{throw new Error("Invalid JSON response");}
       return { res, data };
     }
 
-    function normalizePagesResponse(data) {
-      if (data && data.ok && Array.isArray(data.pages)) {
+    function normalizePagesResponse(data){
+      if (data && data.ok && Array.isArray(data.pages)){
         return data.pages.map(p => ({
           slug: String(p.slug || "").trim(),
           url: p.url ? String(p.url) : ""
@@ -467,31 +408,33 @@
       return [];
     }
 
-    function showUser(user) {
+    function showUser(user){
       const who = $("who");
-      if (!user) { who.textContent = "Not signed in"; return; }
+      if (!user){ who.textContent = "Not signed in"; return; }
       const email = user.email || "";
       who.textContent = email ? ("Signed in: " + email) : "Signed in";
     }
 
-    function dotFor(slug) {
+    function dotFor(slug){
       const entry = statusBySlug.get(slug);
-      if (!entry) return { cls: "green", meta: "" };
+      if (!entry) return { cls: "green", meta: "Live" };
 
-      if (entry.state === "yellow") return { cls: "yellow", meta: "Publishing..." };
+      if (entry.state === "yellow") return { cls: "yellow", meta: "Deploying..." };
       if (entry.state === "red") return { cls: "red", meta: entry.msg ? ("Failed: " + entry.msg) : "Failed" };
+
       return { cls: "green", meta: formatWhen(entry.at) };
     }
 
-    function renderList(pages) {
+    function renderList(pages){
       currentPages = pages.slice();
 
       const list = $("list");
       list.innerHTML = "";
 
-      for (const p of pages) {
-        const slug = p.slug || "";
-        const url = p.url || ("/cra/" + slug);
+      for (const p of pages){
+        const slug = normalizeSlug(p.slug || "");
+        const url = p.url ? String(p.url) : pageUrlForSlug(slug);
+        const viewUrl = pageUrlForSlug(slug);
 
         const row = document.createElement("div");
         row.className = "row";
@@ -503,7 +446,7 @@
         const dot = document.createElement("div");
         const d = dotFor(slug);
         dot.className = "dot " + d.cls;
-        dot.title = d.cls === "green" ? "Published" : d.cls === "yellow" ? "Publishing" : "Failed";
+        dot.title = d.cls === "green" ? "Live" : d.cls === "yellow" ? "Deploying" : "Failed";
 
         const txt = document.createElement("div");
         txt.className = "rowText";
@@ -514,7 +457,7 @@
 
         const meta = document.createElement("div");
         meta.className = "rowMeta";
-        meta.textContent = d.meta || "Published";
+        meta.textContent = d.meta;
 
         txt.appendChild(name);
         txt.appendChild(meta);
@@ -527,10 +470,10 @@
 
         const view = document.createElement("a");
         view.className = "viewBtn";
-        view.href = url;
+        view.href = viewUrl;
         view.target = "_blank";
         view.rel = "noopener";
-        view.textContent = "View";
+        view.textContent = "View Page";
 
         const del = document.createElement("button");
         del.className = "trash";
@@ -543,21 +486,20 @@
           if (!ok) return;
 
           del.disabled = true;
-          try {
+          try{
             const payload2 = await fetchJson("/.netlify/functions/delete-page", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: "include",
               body: JSON.stringify({ slug })
             });
-
             const j = payload2.data;
             if (!j || !j.ok) throw new Error((j && j.error) ? j.error : "Delete failed");
 
             statusBySlug.delete(slug);
             setNotice("ok", `Deleted: /cra/${slug}`);
             await loadPages(true);
-          } catch (e) {
+          } catch(e){
             setNotice("err", "Delete failed: " + (e && e.message ? e.message : String(e)));
           } finally {
             del.disabled = false;
@@ -572,18 +514,12 @@
         list.appendChild(row);
       }
 
-      try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(pages));
-        localStorage.setItem(CACHE_AT_KEY, String(nowMs()));
-      } catch (e) {
-        // ignore storage failures
-      }
+      try{ localStorage.setItem(CACHE_KEY, JSON.stringify(pages)); }catch(e){}
     }
 
-    function updateRowMetaOnly() {
-      // No network, just update dots + meta text for current rendered list.
-      for (const p of currentPages) {
-        const slug = p.slug;
+    function updateRowMetaOnly(){
+      for (const p of currentPages){
+        const slug = normalizeSlug(p.slug);
         const row = document.querySelector('.row[data-slug="' + CSS.escape(slug) + '"]');
         if (!row) continue;
 
@@ -593,35 +529,52 @@
 
         const d = dotFor(slug);
         dot.className = "dot " + d.cls;
-        meta.textContent = d.meta || (d.cls === "yellow" ? "Publishing..." : "Published");
+        meta.textContent = d.meta;
       }
     }
 
-    function mergeInProgressRows(pages) {
-      // If we have yellow/red items not in the fetched list yet, keep them at top.
-      const set = new Set(pages.map(p => p.slug));
-      const extras = [];
-      for (const [slug, entry] of statusBySlug.entries()) {
-        if (entry.state === "yellow" || entry.state === "red") {
-          if (!set.has(slug)) {
-            extras.push({ slug, url: "/cra/" + slug });
+    async function waitForLive(url, maxMs){
+      const start = nowMs();
+      const intervalMs = 2000;
+      while (nowMs() - start < maxMs){
+        try{
+          // Cache bust so you do not get a stale 404 from CDN cache.
+          const u = new URL(url, window.location.origin);
+          u.searchParams.set("_t", String(nowMs()));
+
+          const r = await fetch(u.toString(), { method: "GET", cache: "no-store" });
+
+          // Some CDNs return 200 with a "not found" HTML body, but Netlify 404 is usually 404.
+          if (r.ok){
+            return true;
           }
+        } catch(e){
+          // ignore, keep polling
+        }
+        await new Promise(res => setTimeout(res, intervalMs));
+      }
+      return false;
+    }
+
+    function mergeInProgressRows(pages){
+      const set = new Set(pages.map(p => normalizeSlug(p.slug)));
+      const extras = [];
+      for (const [slug, entry] of statusBySlug.entries()){
+        if ((entry.state === "yellow" || entry.state === "red") && !set.has(slug)){
+          extras.push({ slug, url: pageUrlForSlug(slug) });
         }
       }
-      // Put extras at top
       return extras.concat(pages);
     }
 
-    async function loadPages(isManual) {
+    async function loadPages(isManual){
       const statusEl = $("listStatus");
-
-      // Do NOT clear the list. Just show status text.
       statusEl.textContent = isManual ? "Refreshing..." : "Updating...";
 
       let payload;
-      try {
+      try{
         payload = await fetchJson("/.netlify/functions/list-pages", { method: "GET", credentials: "include" });
-      } catch (e) {
+      } catch(e){
         statusEl.textContent = "Could not refresh list.";
         setNotice("err", "List failed: " + (e && e.message ? e.message : String(e)));
         return;
@@ -630,8 +583,8 @@
       const data = payload.data;
       const pagesRaw = normalizePagesResponse(data);
 
-      if (!pagesRaw.length) {
-        if (data && data.ok === false) {
+      if (!pagesRaw.length){
+        if (data && data.ok === false){
           statusEl.textContent = "List unavailable.";
           setNotice("err", "List failed: " + (data.error ? data.error : "Unknown error"));
           return;
@@ -641,67 +594,70 @@
         return;
       }
 
-      // Anything that exists in the list is "published". Flip yellow -> green.
-      for (const p of pagesRaw) {
-        const slug = p.slug;
-        const entry = statusBySlug.get(slug);
-        if (entry && entry.state === "yellow") {
-          statusBySlug.set(slug, { state: "green", at: entry.at || nowMs() });
-        }
-      }
-
       statusEl.textContent = "";
       renderList(mergeInProgressRows(pagesRaw));
     }
 
-    async function publish() {
+    async function publish(){
       const slug = normalizeSlug($("slug").value);
       $("slug").value = slug;
 
-      if (!slug) { setNotice("err", "Please enter a slug or filename."); return; }
+      if (!slug){ setNotice("err", "Please enter a slug or filename."); return; }
 
       const html = $("html").value || "";
-      if (!html.trim()) { setNotice("err", "Please paste HTML."); return; }
+      if (!html.trim()){ setNotice("err", "Please paste HTML."); return; }
 
       const overwrite = $("overwrite").checked;
 
       $("publishBtn").disabled = true;
       setNotice("info", "Publishing...");
 
-      // Yellow immediately
       const startedAt = nowMs();
-      statusBySlug.set(slug, { state: "yellow", at: startedAt });
+      statusBySlug.set(slug, { state: "yellow", at: startedAt, url: pageUrlForSlug(slug) });
 
-      // Ensure it shows instantly, even if not in list yet
-      if (!currentPages.find(p => p.slug === slug)) {
-        renderList([{ slug, url: "/cra/" + slug }].concat(currentPages));
+      // Show immediately in list at top (yellow)
+      if (!currentPages.find(p => normalizeSlug(p.slug) === slug)){
+        renderList([{ slug, url: pageUrlForSlug(slug) }].concat(currentPages));
       } else {
         updateRowMetaOnly();
       }
 
-      try {
+      try{
         const payload = await fetchJson("/.netlify/functions/publish", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          credentials:"include",
           body: JSON.stringify({ slug, html, overwrite })
         });
 
         const data = payload.data;
         if (!data || !data.ok) throw new Error((data && data.error) ? data.error : "Publish failed");
 
-        const url = data.url || ("/cra/" + slug);
+        const url = data.url || pageUrlForSlug(slug);
         const commit = data.commit || "(unknown)";
-        setNotice("ok", `Published: ${url}\nCommit: ${commit}`);
+        setNotice("ok", `Committed. Deploying...\nURL: ${url}\nCommit: ${commit}`);
 
-        // Green immediately, then fetch list to confirm ordering
-        statusBySlug.set(slug, { state: "green", at: startedAt });
+        // Keep yellow until it is actually live
+        statusBySlug.set(slug, { state: "yellow", at: startedAt, url });
+
+        // Refresh list now so it shows in the list immediately (still yellow)
+        await loadPages(false);
         updateRowMetaOnly();
 
-        await loadPages(false);
-        document.querySelector(".listHeader").scrollIntoView({ behavior: "smooth", block: "start" });
-      } catch (e) {
-        statusBySlug.set(slug, { state: "red", at: nowMs(), msg: (e && e.message) ? e.message : String(e) });
+        // Poll public URL until it is live, up to 90 seconds
+        const live = await waitForLive(url, 90000);
+
+        if (live){
+          statusBySlug.set(slug, { state: "green", at: nowMs(), url });
+          setNotice("ok", `Live.\nURL: ${url}`);
+        } else {
+          statusBySlug.set(slug, { state: "red", at: nowMs(), url, msg: "Not live yet (deploy still in progress?)" });
+          setNotice("err", `Committed, but not live yet.\nThis usually means Netlify is still deploying.\nTry again in a minute.\nURL: ${url}`);
+        }
+
+        updateRowMetaOnly();
+      } catch(e){
+        statusBySlug.set(slug, { state: "red", at: nowMs(), url: pageUrlForSlug(slug), msg: (e && e.message) ? e.message : String(e) });
         setNotice("err", "Publish failed: " + (e && e.message ? e.message : String(e)));
         updateRowMetaOnly();
       } finally {
@@ -709,47 +665,42 @@
       }
     }
 
-    function clearForm() {
+    function clearForm(){
       $("slug").value = "";
       $("html").value = "";
       $("overwrite").checked = false;
       setNotice("", "");
     }
 
-    function wireApp() {
+    function wireApp(){
       $("publishBtn").addEventListener("click", publish);
       $("clearBtn").addEventListener("click", clearForm);
       $("refreshBtn").addEventListener("click", () => loadPages(true));
 
-      // Instant render from cache (perceived performance)
-      try {
+      // Instant render from cache
+      try{
         const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
+        if (cached){
           const pages = JSON.parse(cached);
-          if (Array.isArray(pages) && pages.length) {
+          if (Array.isArray(pages) && pages.length){
             $("listStatus").textContent = "Loaded from cache. Updating...";
-            renderList(mergeInProgressRows(pages));
+            renderList(pages);
           }
         }
-      } catch (e) {
-        // ignore
-      }
+      } catch(e){}
 
-      // Then fetch real list in background
       loadPages(false);
-
-      // Update timestamps locally, no network
-      setInterval(updateRowMetaOnly, 10000);
+      setInterval(updateRowMetaOnly, 5000);
     }
 
-    function bootAuthGate() {
-      if (!window.netlifyIdentity) {
+    function bootAuthGate(){
+      if (!window.netlifyIdentity){
         toLogin("please-login");
         return;
       }
 
       window.netlifyIdentity.on("init", (user) => {
-        if (!user) {
+        if (!user){
           toLogin("please-login");
           return;
         }
