@@ -138,12 +138,37 @@
 
     function setStatus(type, msg) {
       statusEl.className = "status " + (type || "");
-      statusEl.textContent = msg;
+      statusEl.textContent = msg || "";
+      statusEl.style.display = msg ? "block" : "none";
     }
 
-    function goPublisher() {
-      // Use trailing slash to avoid "index.html not reliable" behavior
-      window.location.href = "/admin/publisher/";
+    function getParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    function safeNextPath(next) {
+      // Only allow same-origin relative paths
+      const raw = String(next || "").trim();
+      if (!raw) return "/admin/publisher/";
+      if (!raw.startsWith("/")) return "/admin/publisher/";
+      if (raw.startsWith("//")) return "/admin/publisher/";
+      return raw;
+    }
+
+    function resolveMessage(msgKey) {
+      switch (msgKey) {
+        case "please-login":
+          return "Please sign in to access the Publisher tool.";
+        case "session-expired":
+          return "Your session expired. Please sign in again.";
+        case "logged-out":
+          return "You have been signed out.";
+        case "not-authorized":
+          return "You are signed in, but you do not have access to this tool.";
+        default:
+          return "";
+      }
     }
 
     function boot() {
@@ -152,36 +177,37 @@
         return;
       }
 
-      // Initialize identity
+      const next = safeNextPath(getParam("next"));
+      const msg = resolveMessage(getParam("msg"));
+
+      if (msg) setStatus("ok", msg);
+
       window.netlifyIdentity.init();
 
-      // If already logged in, go straight to publisher
+      // If already logged in, send them where they were trying to go
       const user = window.netlifyIdentity.currentUser();
       if (user) {
-        setStatus("ok", "You are already logged in. Redirecting to Publisher…");
-        setTimeout(goPublisher, 250);
+        setStatus("ok", "You are already logged in. Redirecting…");
+        setTimeout(() => { window.location.href = next; }, 250);
         return;
       }
 
-      // Button opens the Identity modal
       loginBtn.addEventListener("click", () => {
         setStatus("", "");
         window.netlifyIdentity.open("login");
       });
 
+      // This button is now safe: it routes through login gating in publisher page
       goPublisherBtn.addEventListener("click", () => {
-        goPublisher();
+        window.location.href = next || "/admin/publisher/";
       });
 
-      // When login completes, redirect
       window.netlifyIdentity.on("login", () => {
-        setStatus("ok", "Logged in. Redirecting to Publisher…");
-        // Close modal then redirect
+        setStatus("ok", "Logged in. Redirecting…");
         window.netlifyIdentity.close();
-        setTimeout(goPublisher, 250);
+        setTimeout(() => { window.location.href = next; }, 250);
       });
 
-      // Optional: show errors a little more clearly
       window.netlifyIdentity.on("error", (err) => {
         setStatus("err", err && err.message ? err.message : "Login error.");
       });
