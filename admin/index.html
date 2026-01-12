@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catalyst Ridge Admin</title>
+
+  <style>
+    :root{
+      --teal-900:#0E5E6F;
+      --teal-700:#14788B;
+      --coral:#FF6B5A;
+      --ink:#12313A;
+      --muted:#6B7B83;
+      --card:#ffffff;
+      --bg1:#0E5E6F;
+      --bg2:#17A2B8;
+      --shadow: 0 20px 55px rgba(0,0,0,.25);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--ink);
+      min-height:100vh;
+      background: radial-gradient(1200px 600px at 70% 20%, rgba(255,255,255,.20), rgba(255,255,255,0)),
+                  linear-gradient(160deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 16px;
+    }
+    .card{
+      width:min(760px, 100%);
+      background:var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .header{
+      padding:22px 22px 14px;
+      background: linear-gradient(90deg, var(--teal-900), rgba(20,120,139,.55));
+      color:#fff;
+    }
+    .title{
+      font-size:28px;
+      line-height:1.15;
+      margin:0 0 6px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:0;
+      opacity:.9;
+      font-size:14px;
+    }
+    .content{padding:18px 22px 22px}
+    .btn{
+      width:100%;
+      border:none;
+      cursor:pointer;
+      font-weight:800;
+      font-size:16px;
+      padding:14px 16px;
+      border-radius:14px;
+      background:var(--coral);
+      color:#fff;
+      margin-top:14px;
+    }
+    .btn.secondary{
+      background:#F2F5F7;
+      color:var(--ink);
+      border:1px solid rgba(0,0,0,.12);
+      margin-top:10px;
+    }
+    .note{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+    .status{
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:14px;
+      background:#F2F5F7;
+      border:1px solid rgba(0,0,0,.10);
+      font-size:14px;
+      color:var(--ink);
+      white-space:pre-wrap;
+      display:none;
+    }
+    .status.ok{
+      display:block;
+      background: rgba(215,241,244,.65);
+      border-color: rgba(14,94,111,.20);
+    }
+    .status.err{
+      display:block;
+      background: rgba(255,107,90,.12);
+      border-color: rgba(255,107,90,.30);
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .tiny{
+      font-size:12px;
+      color: rgba(255,255,255,0.88);
+      margin-top: 6px;
+    }
+    code{
+      background: rgba(0,0,0,.06);
+      padding:2px 6px;
+      border-radius:8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="header">
+      <h1 class="title">Catalyst Ridge Admin</h1>
+      <p class="subtitle">Sign in to access internal tools.</p>
+      <div class="tiny">Entry point: <code>/admin/</code></div>
+    </div>
+
+    <div class="content">
+      <button id="loginBtn" class="btn" type="button">Log in</button>
+
+      <div class="row">
+        <button id="goPublisherBtn" class="btn secondary" type="button">Go to Publisher</button>
+        <button id="resetBtn" class="btn secondary" type="button">Reset session</button>
+      </div>
+
+      <div class="note">
+        If your normal browser keeps redirecting or you can only use incognito, click <b>Reset session</b>.
+        That clears stale Identity data that can cause loops.
+      </div>
+
+      <div id="status" class="status"></div>
+    </div>
+  </div>
+
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const loginBtn = document.getElementById("loginBtn");
+    const goPublisherBtn = document.getElementById("goPublisherBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function setStatus(type, msg) {
+      statusEl.className = "status " + (type || "");
+      statusEl.textContent = msg || "";
+      statusEl.style.display = msg ? "block" : "none";
+    }
+
+    function getParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    function safeNextPath(next) {
+      const raw = String(next || "").trim();
+      if (!raw) return "/admin/publisher/index.html";
+      if (!raw.startsWith("/")) return "/admin/publisher/index.html";
+      if (raw.startsWith("//")) return "/admin/publisher/index.html";
+      return raw;
+    }
+
+    function normalizeNext(next) {
+      const n = safeNextPath(next);
+      if (n === "/admin/publisher" || n === "/admin/publisher/") return "/admin/publisher/index.html";
+      if (n.startsWith("/admin/publisher/?")) return "/admin/publisher/index.html" + n.substring("/admin/publisher/".length);
+      return n;
+    }
+
+    function resolveMessage(msgKey) {
+      switch (msgKey) {
+        case "please-login": return "Please sign in to access the Publisher tool.";
+        case "session-expired": return "Your session expired. Please sign in again.";
+        case "logged-out": return "You have been signed out.";
+        case "not-authorized": return "You are signed in, but you do not have access to this tool.";
+        default: return "";
+      }
+    }
+
+    function clearIdentityStorage() {
+      try {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (!k) continue;
+          const low = k.toLowerCase();
+          if (low.includes("netlify") || low.includes("gotrue") || low.includes("identity")) {
+            keys.push(k);
+          }
+        }
+        keys.forEach(k => localStorage.removeItem(k));
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    async function validateUser(user) {
+      // This is the key fix for "works in incognito but not normal browser".
+      // If there is stale auth, jwt(true) will throw and we force logout.
+      try {
+        if (!user) return false;
+        await user.jwt(true);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function go(next) {
+      window.location.href = next;
+    }
+
+    function boot() {
+      if (!window.netlifyIdentity) {
+        setStatus("err", "Netlify Identity widget did not load.");
+        return;
+      }
+
+      const msg = resolveMessage(getParam("msg"));
+      const next = normalizeNext(getParam("next"));
+
+      if (msg) setStatus("ok", msg);
+
+      window.netlifyIdentity.on("init", async (user) => {
+        if (user) {
+          const ok = await validateUser(user);
+          if (ok) {
+            setStatus("ok", "You are signed in. Redirecting…");
+            setTimeout(() => go(next), 200);
+            return;
+          }
+
+          // stale session
+          setStatus("err", "Your saved session is invalid. Click Reset session, then Log in.");
+          return;
+        }
+
+        // Not logged in
+        if (!msg) setStatus("", "");
+      });
+
+      loginBtn.addEventListener("click", () => {
+        setStatus("", "");
+        window.netlifyIdentity.open("login");
+      });
+
+      goPublisherBtn.addEventListener("click", () => {
+        go("/admin/publisher/index.html");
+      });
+
+      resetBtn.addEventListener("click", async () => {
+        setStatus("ok", "Resetting session…");
+        try {
+          if (window.netlifyIdentity.currentUser()) {
+            await window.netlifyIdentity.logout();
+          }
+        } catch (e) {
+          // ignore
+        }
+        clearIdentityStorage();
+        setStatus("ok", "Session reset. Click Log in.");
+      });
+
+      window.netlifyIdentity.on("login", async (user) => {
+        try {
+          await validateUser(user);
+        } catch (e) {
+          // ignore
+        }
+        setStatus("ok", "Logged in. Redirecting…");
+        window.netlifyIdentity.close();
+        setTimeout(() => go(next), 200);
+      });
+
+      window.netlifyIdentity.on("logout", () => {
+        setStatus("ok", "Signed out.");
+      });
+
+      window.netlifyIdentity.on("error", (err) => {
+        setStatus("err", err && err.message ? err.message : "Login error.");
+      });
+
+      window.netlifyIdentity.init();
+    }
+
+    boot();
+  </script>
+</body>
+</html>
