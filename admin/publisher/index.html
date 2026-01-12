@@ -46,36 +46,16 @@
         var(--white);
     }
 
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-    }
+    .container { max-width: 1180px; margin: 0 auto; }
 
     header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 18px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap: 18px; margin-bottom: 18px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .brand { display:flex; align-items:center; gap: 14px; }
 
-    .brand img {
-      height: 40px;
-      width: auto;
-      display: block;
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.1;
-    }
+    .brand-text { display:flex; flex-direction:column; line-height:1.1; }
 
     .brand-title {
       font-family: var(--heading);
@@ -92,15 +72,12 @@
     }
 
     .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      display:flex; align-items:center; gap: 10px;
+      flex-wrap: wrap; justify-content:flex-end;
     }
 
     .pill {
-      display: inline-block;
+      display:inline-block;
       padding: 2px 10px;
       border-radius: 999px;
       border: 1px solid rgba(14,94,111,0.25);
@@ -110,10 +87,7 @@
       font-weight: 700;
     }
 
-    .who {
-      font-size: 12px;
-      color: rgba(46,58,70,0.70);
-    }
+    .who { font-size: 12px; color: rgba(46,58,70,0.70); }
 
     h1 {
       font-family: var(--heading);
@@ -123,11 +97,7 @@
       color: var(--teal-dark);
     }
 
-    .sub {
-      margin-top: 6px;
-      font-size: 13px;
-      color: rgba(46,58,70,0.75);
-    }
+    .sub { margin-top: 6px; font-size: 13px; color: rgba(46,58,70,0.75); }
 
     .grid {
       display: grid;
@@ -151,7 +121,7 @@
     }
 
     label {
-      display: block;
+      display:block;
       font-size: 12px;
       font-weight: 700;
       color: rgba(46,58,70,0.85);
@@ -159,7 +129,7 @@
     }
 
     input[type="text"] {
-      width: 100%;
+      width:100%;
       padding: 11px 12px;
       border-radius: var(--radius-md);
       border: 1px solid rgba(46,58,70,0.22);
@@ -170,14 +140,8 @@
       font-size: 13px;
     }
 
-    input[type="text"]:focus,
-    textarea:focus {
-      border-color: rgba(14,94,111,0.55);
-      box-shadow: 0 0 0 4px rgba(168,218,220,0.35);
-    }
-
     textarea {
-      width: 100%;
+      width:100%;
       min-height: 420px;
       padding: 12px;
       border-radius: var(--radius-md);
@@ -191,41 +155,34 @@
       line-height: 1.45;
     }
 
-    .rowline {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: rgba(14,94,111,0.55);
+      box-shadow: 0 0 0 4px rgba(168,218,220,0.35);
     }
 
+    .rowline { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+
     .check {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
+      display:inline-flex; align-items:center; gap:8px;
+      font-size: 13px; font-weight: 600;
       color: rgba(46,58,70,0.75);
     }
 
     button {
-      appearance: none;
+      appearance:none;
       border-radius: 14px;
       padding: 10px 14px;
       border: 1px solid rgba(46,58,70,0.22);
       background: rgba(248,249,250,0.95);
       color: var(--slate);
-      cursor: pointer;
+      cursor:pointer;
       font-weight: 800;
       font-size: 13px;
       transition: transform 0.05s ease, box-shadow 0.15s ease, border-color 0.15s ease;
     }
 
-    button:hover {
-      border-color: rgba(14,94,111,0.45);
-      box-shadow: var(--shadow-md);
-    }
-
+    button:hover { border-color: rgba(14,94,111,0.45); box-shadow: var(--shadow-md); }
     button:active { transform: translateY(1px); }
 
     button.primary {
@@ -234,17 +191,7 @@
       color: var(--teal-dark);
     }
 
-    button.danger {
-      border-color: rgba(255,107,90,0.55);
-      background: linear-gradient(135deg, rgba(255,107,90,0.14), rgba(255,107,90,0.04));
-      color: #8B2D24;
-    }
-
-    button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
+    button:disabled { opacity: 0.55; cursor: not-allowed; box-shadow:none; }
 
     .notice {
       margin-top: 14px;
@@ -254,9 +201,11 @@
       background: rgba(248,249,250,0.98);
       white-space: pre-wrap;
       font-size: 13px;
+      display:none;
     }
 
     .notice.ok {
+      display:block;
       border-color: rgba(14,94,111,0.35);
       background: rgba(168,218,220,0.28);
       color: var(--teal-dark);
@@ -264,29 +213,20 @@
     }
 
     .notice.err {
+      display:block;
       border-color: rgba(255,107,90,0.35);
       background: rgba(255,107,90,0.14);
       color: #8B2D24;
       font-weight: 700;
     }
 
-    .notice.info { color: rgba(46,58,70,0.75); }
+    .notice.info { display:block; color: rgba(46,58,70,0.75); }
 
-    .mutedHint {
-      margin-top: 10px;
-      font-size: 13px;
-      color: rgba(46,58,70,0.70);
-    }
+    .mutedHint { margin-top: 10px; font-size: 13px; color: rgba(46,58,70,0.70); }
 
     .section-gap { height: 16px; }
 
-    .listHeader {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
+    .listHeader { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom: 10px; }
 
     .listHeader h2 {
       font-family: var(--heading);
@@ -296,23 +236,12 @@
       margin: 0;
     }
 
-    #listStatus {
-      font-size: 13px;
-      color: rgba(46,58,70,0.72);
-      margin-top: 6px;
-    }
+    #listStatus { font-size: 13px; color: rgba(46,58,70,0.72); margin-top: 6px; }
 
-    .listWrap {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
+    .listWrap { display:grid; gap:10px; margin-top: 12px; }
 
     .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
       padding: 10px 12px;
       border-radius: 16px;
       border: 1px solid rgba(46,58,70,0.16);
@@ -324,23 +253,18 @@
       font-family: var(--mono);
       font-size: 13px;
       color: var(--ink);
-      overflow: hidden;
+      overflow:hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 62%;
       font-weight: 700;
     }
 
-    .rowActions {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-    }
+    .rowActions { display:inline-flex; align-items:center; gap:10px; flex-shrink:0; }
 
     a.viewBtn {
       color: var(--teal-dark);
-      text-decoration: none;
+      text-decoration:none;
       font-weight: 900;
       font-size: 13px;
       padding: 8px 10px;
@@ -359,14 +283,19 @@
       height: 38px;
       padding: 0;
       border-radius: 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border: 1px solid rgba(255,107,90,0.45);
+      background: rgba(255,107,90,0.12);
+      color: #8B2D24;
     }
 
-    .trash.danger {
-      border-color: rgba(255,107,90,0.45);
-      background: rgba(255,107,90,0.12);
+    /* gated UI */
+    #app { display:none; }
+    #gate {
+      display:block;
+      margin-top: 14px;
     }
   </style>
 </head>
@@ -375,8 +304,6 @@
   <div class="container">
     <header>
       <div class="brand">
-        <!-- Optional logo: put a file at /admin/publisher/logo.svg then uncomment -->
-        <!-- <img src="logo.svg" alt="Catalyst Ridge Advisory" /> -->
         <div class="brand-text">
           <div class="brand-title">Catalyst Ridge Advisory</div>
           <div class="brand-sub">Internal Publisher Tool</div>
@@ -386,53 +313,61 @@
       <div class="topbar-right">
         <div class="who" id="who">Checking session...</div>
         <div class="who">Path: <span class="pill">/cra/</span></div>
-        <button id="logoutBtn" type="button">Log out</button>
+        <button id="logoutBtn" type="button" disabled>Log out</button>
       </div>
     </header>
 
-    <h1>HTML Publisher</h1>
-    <div class="sub">Publish and manage pages inside <span class="pill">/cra/</span></div>
-
-    <div class="grid">
-      <div class="card">
-        <label for="slug">Slug or filename</label>
-        <input id="slug" type="text" placeholder="example: landing or landing.html" />
-
-        <div class="rowline">
-          <label class="check">
-            <input id="overwrite" type="checkbox" />
-            Overwrite if exists
-          </label>
-
-          <button id="publishBtn" class="primary" type="button">Publish</button>
-          <button id="clearBtn" type="button">Clear</button>
-          <button id="refreshBtn" type="button">Refresh list</button>
-        </div>
-
-        <div id="notice" class="notice info" style="display:none;"></div>
-
-        <div class="mutedHint">
-          Tip: paste a full HTML document, including doctype.
-        </div>
-      </div>
-
-      <div class="card">
-        <label for="html">HTML</label>
-        <textarea id="html" placeholder="Paste HTML here..."></textarea>
-      </div>
+    <div id="gate" class="card">
+      <h1>Checking your session</h1>
+      <div class="sub">If you are not signed in, you will be redirected to login.</div>
+      <div id="gateNotice" class="notice info">Loading...</div>
     </div>
 
-    <div class="section-gap"></div>
+    <div id="app">
+      <h1>HTML Publisher</h1>
+      <div class="sub">Publish and manage pages inside <span class="pill">/cra/</span></div>
 
-    <div class="card">
-      <div class="listHeader">
-        <div>
-          <h2>Published pages</h2>
-          <div id="listStatus"></div>
+      <div class="grid">
+        <div class="card">
+          <label for="slug">Slug or filename</label>
+          <input id="slug" type="text" placeholder="example: landing or landing.html" />
+
+          <div class="rowline">
+            <label class="check">
+              <input id="overwrite" type="checkbox" />
+              Overwrite if exists
+            </label>
+
+            <button id="publishBtn" class="primary" type="button">Publish</button>
+            <button id="clearBtn" type="button">Clear</button>
+            <button id="refreshBtn" type="button">Refresh list</button>
+          </div>
+
+          <div id="notice" class="notice info"></div>
+
+          <div class="mutedHint">
+            Tip: paste a full HTML document, including doctype.
+          </div>
+        </div>
+
+        <div class="card">
+          <label for="html">HTML</label>
+          <textarea id="html" placeholder="Paste HTML here..."></textarea>
         </div>
       </div>
 
-      <div id="list" class="listWrap"></div>
+      <div class="section-gap"></div>
+
+      <div class="card">
+        <div class="listHeader">
+          <div>
+            <h2>Published pages</h2>
+            <div id="listStatus"></div>
+          </div>
+        </div>
+
+        <div id="list" class="listWrap"></div>
+      </div>
     </div>
   </div>
 
@@ -441,12 +376,17 @@
   <script>
     function $(id) { return document.getElementById(id); }
 
+    function showGate(msg) {
+      $("gateNotice").className = "notice info";
+      $("gateNotice").textContent = msg || "Loading...";
+    }
+
     function setNotice(kind, msg) {
       const box = $("notice");
-      if (!kind || !msg) {
-        box.style.display = "none";
-        box.textContent = "";
+      if (!msg) {
         box.className = "notice info";
+        box.textContent = "";
+        box.style.display = "none";
         return;
       }
       box.style.display = "block";
@@ -461,12 +401,8 @@
       return raw;
     }
 
-    function trashIcon() { return "🗑️"; }
-
     function toLogin(msgKey) {
-      const next = window.location.pathname.endsWith("/")
-        ? window.location.pathname
-        : (window.location.pathname + window.location.search);
+      const next = window.location.pathname + window.location.search;
       const url = new URL("/admin/publisher/login.html", window.location.origin);
       url.searchParams.set("next", next || "/admin/publisher/");
       if (msgKey) url.searchParams.set("msg", msgKey);
@@ -475,26 +411,13 @@
 
     async function fetchJson(url, options) {
       const res = await fetch(url, options);
-
-      // If functions ever start returning 401 for unauthenticated calls, handle it cleanly.
       if (res.status === 401) {
         toLogin("session-expired");
         throw new Error("Not authenticated");
       }
-
-      let data = null;
-      try {
-        data = await res.json();
-      } catch (e) {
-        throw new Error("Invalid JSON response");
-      }
-
-      // Some setups return 200 with ok:false for auth failures.
-      if (data && data.ok === false && (data.error || "").toLowerCase().includes("auth")) {
-        toLogin("session-expired");
-        throw new Error(data.error || "Not authenticated");
-      }
-
+      let data;
+      try { data = await res.json(); }
+      catch { throw new Error("Invalid JSON response"); }
       return { res, data };
     }
 
@@ -505,13 +428,14 @@
           url: p.url ? String(p.url) : ""
         })).filter(p => p.slug);
       }
-      if (data && Array.isArray(data.files)) {
-        return data.files.map(f => ({
-          slug: String(f.name || "").trim(),
-          url: "/cra/" + String(f.name || "").trim()
-        })).filter(p => p.slug);
-      }
       return [];
+    }
+
+    function showUser(user) {
+      const who = $("who");
+      if (!user) { who.textContent = "Not signed in"; return; }
+      const email = user.email || "";
+      who.textContent = email ? ("Signed in: " + email) : "Signed in";
     }
 
     async function loadPages() {
@@ -564,9 +488,9 @@
         view.textContent = "View";
 
         const del = document.createElement("button");
-        del.className = "trash danger";
+        del.className = "trash";
         del.type = "button";
-        del.textContent = trashIcon();
+        del.textContent = "🗑️";
         del.title = "Delete";
 
         del.addEventListener("click", async () => {
@@ -584,7 +508,6 @@
 
             const j = payload2.data;
             if (!j || !j.ok) throw new Error((j && j.error) ? j.error : "Delete failed");
-
             setNotice("ok", `Deleted: /cra/${slug}`);
             await loadPages();
           } catch (e) {
@@ -608,16 +531,10 @@
       const slug = normalizeSlug($("slug").value);
       $("slug").value = slug;
 
-      if (!slug) {
-        setNotice("err", "Please enter a slug or filename.");
-        return;
-      }
+      if (!slug) { setNotice("err", "Please enter a slug or filename."); return; }
 
       const html = $("html").value || "";
-      if (!html.trim()) {
-        setNotice("err", "Please paste HTML.");
-        return;
-      }
+      if (!html.trim()) { setNotice("err", "Please paste HTML."); return; }
 
       const overwrite = $("overwrite").checked;
 
@@ -655,48 +572,45 @@
       setNotice("", "");
     }
 
-    function showUser(user) {
-      const who = $("who");
-      if (!user) {
-        who.textContent = "Not signed in";
-        return;
-      }
-      const email = user.email || (user.user_metadata && user.user_metadata.email) || "";
-      who.textContent = email ? ("Signed in: " + email) : "Signed in";
-    }
-
-    function bootAuthGate() {
-      if (!window.netlifyIdentity) {
-        // If Identity is not available, force login so you do not get confusing states
-        toLogin("please-login");
-        return;
-      }
-
-      window.netlifyIdentity.init();
-
-      const user = window.netlifyIdentity.currentUser();
-      if (!user) {
-        toLogin("please-login");
-        return;
-      }
-
-      showUser(user);
-
-      // If the user logs out in another tab, keep behavior clean
-      window.netlifyIdentity.on("logout", () => toLogin("logged-out"));
-      window.netlifyIdentity.on("login", (u) => showUser(u));
-
-      $("logoutBtn").addEventListener("click", () => {
-        window.netlifyIdentity.logout();
-        toLogin("logged-out");
-      });
-
-      // Only once authenticated do we wire up the tool UI
+    function wireApp() {
       $("publishBtn").addEventListener("click", publish);
       $("clearBtn").addEventListener("click", clearForm);
       $("refreshBtn").addEventListener("click", loadPages);
 
       loadPages();
+    }
+
+    function bootAuthGate() {
+      if (!window.netlifyIdentity) {
+        toLogin("please-login");
+        return;
+      }
+
+      // Wait for init to complete before deciding.
+      window.netlifyIdentity.on("init", (user) => {
+        if (!user) {
+          toLogin("please-login");
+          return;
+        }
+
+        showUser(user);
+        $("logoutBtn").disabled = false;
+        $("logoutBtn").addEventListener("click", () => {
+          window.netlifyIdentity.logout();
+          toLogin("logged-out");
+        });
+
+        // Switch UI from gate to app
+        $("gate").style.display = "none";
+        $("app").style.display = "block";
+
+        wireApp();
+      });
+
+      window.netlifyIdentity.on("logout", () => toLogin("logged-out"));
+
+      showGate("Loading your session...");
+      window.netlifyIdentity.init();
     }
 
     bootAuthGate();
