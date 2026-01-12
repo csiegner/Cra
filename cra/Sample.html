@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalyst Ridge Advisory | The 9 Step System</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Manrope', 'sans-serif'],
+            serif: ['Fraunces', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            'cr-teal-900': '#0E5E6F',
+            'cr-teal-700': '#14788B',
+            'cr-coral': '#FF6B5A',
+            'cr-ink': '#12313A',
+            'cr-warm': '#F8F9FA',
+            'cr-sky': '#A8DADC',
+            'cr-slate': '#2E3A46',
+          },
+          letterSpacing: {
+            tightish: '-0.02em',
+            widest: '0.2em',
+          },
+          boxShadow: {
+            soft: '0 22px 60px rgba(18,49,58,0.12)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .card-hover { transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1); }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 24px 50px -20px rgba(18,49,58,0.18); }
+    .ridge-border { position: relative; }
+    .ridge-border::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72px;
+      height: 1px;
+      background: rgba(18,49,58,0.35);
+    }
+  </style>
+</head>
+
+<body class="font-sans text-cr-ink bg-white selection:bg-cr-teal-900 selection:text-white">
+
+  <!-- NAV -->
+  <nav class="bg-white/90 backdrop-blur border-b border-cr-ink/10 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex h-24 items-center">
+        <div class="flex items-center gap-4">
+          <div class="w-11 h-11 rounded-xl bg-cr-teal-900 text-white flex items-center justify-center shadow-soft">
+            <i data-lucide="mountain" class="h-5 w-5"></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-serif text-2xl tracking-tight text-cr-ink leading-none">Catalyst Ridge Advisory</span>
+            <span class="text-cr-slate text-[10px] font-semibold tracking-[0.28em] uppercase mt-1">AI Strategy, Built for Execution</span>
+          </div>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-10 ml-auto">
+          <a href="#curriculum" class="text-cr-slate hover:text-cr-ink text-xs font-semibold uppercase tracking-[0.22em] transition-colors">The 9 Sessions</a>
+          <a href="#impact" class="text-cr-slate hover:text-cr-ink text-xs font-semibold uppercase tracking-[0.22em] transition-colors">Outcomes</a>
+          <a href="#enrollment" class="inline-flex items-center gap-2 border border-cr-ink/20 text-cr-ink px-7 py-3 rounded-xl text-xs font-semibold hover:bg-cr-ink hover:text-white transition-all uppercase tracking-[0.22em]">
+            Start Here
+            <i data-lucide="arrow-right" class="h-4 w-4"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="relative overflow-hidden border-b border-cr-ink/5">
+    <div class="absolute inset-0 bg-gradient-to-b from-cr-warm via-white to-white"></div>
+    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-cr-sky/30 blur-3xl"></div>
+    <div class="absolute -bottom-28 -left-28 w-[520px] h-[520px] rounded-full bg-cr-coral/15 blur-3xl"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-24 lg:py-32">
+      <div class="grid lg:grid-cols-2 gap-14 items-center">
+
+        <div>
+          <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white border border-cr-ink/10 text-cr-ink text-xs font-semibold uppercase tracking-[0.22em] mb-10">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cr-coral opacity-60"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-cr-coral"></span>
+            </span>
+            Ready to build
+          </div>
+
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-serif text-cr-ink leading-[1.05] tracking-tightish">
+            <!-- TODO: Insert headline -->
+            Replace confusion with clarity.
+          </h1>
+
+          <p class="text-xl text-cr-slate mt-7 max-w-xl leading-relaxed font-light">
+            <!-- TODO: Insert subhead -->
+            A 9 session system that turns your real world problem into a working plan, usable assets, and execution you can sustain.
+          </p>
+
+          <div class="flex flex-wrap gap-8 mt-10 py-6 border-y border-cr-ink/10 text-sm text-cr-slate">
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-cr-teal-900"></i>
+              <span>Practical sessions</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-cr-teal-900"></i>
+              <span>Real deliverables</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-cr-teal-900"></i>
+              <span>Built for teams</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 mt-10">
+            <a href="#curriculum" class="inline-flex justify-center items-center gap-2 bg-cr-teal-900 text-white px-9 py-4 rounded-xl text-sm font-semibold hover:bg-cr-teal-700 transition-all uppercase tracking-[0.20em]">
+              View scope
+              <i data-lucide="sparkles" class="h-4 w-4"></i>
+            </a>
+            <a href="#enrollment" class="inline-flex justify-center items-center gap-2 bg-white border border-cr-ink/20 text-cr-ink px-9 py-4 rounded-xl text-sm font-semibold hover:bg-cr-warm transition-all uppercase tracking-[0.20em]">
+              Choose a path
+              <i data-lucide="chevron-right" class="h-4 w-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="relative hidden lg:block">
+          <div class="bg-white border border-cr-ink/10 rounded-2xl shadow-soft p-10">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-cr-teal-900 text-white flex items-center justify-center">
+                <i data-lucide="book-open" class="h-5 w-5"></i>
+              </div>
+              <span class="text-[10px] font-semibold text-cr-slate tracking-[0.28em] uppercase">Module 01</span>
+            </div>
+
+            <h3 class="mt-10 text-3xl font-serif text-cr-ink">The Foundation</h3>
+            <p class="mt-4 text-cr-slate font-light leading-relaxed">
+              <!-- TODO -->
+              Set the target outcome, define the constraints, and build the first asset you can deploy immediately.
+            </p>
+
+            <div class="mt-10 pt-8 border-t border-cr-ink/10 flex items-center gap-4">
+              <div class="h-11 w-11 rounded-full bg-cr-warm border border-cr-ink/10 flex items-center justify-center text-cr-ink text-xs font-serif">CR</div>
+              <div class="text-xs">
+                <p class="text-cr-ink font-semibold">Catalyst Ridge</p>
+                <p class="text-cr-slate italic font-light">9 step build system</p>
+              </div>
+            </div>
+
+            <div class="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cr-coral/10 border border-cr-coral/30 text-cr-ink text-xs font-semibold uppercase tracking-[0.20em]">
+              Start here
+              <i data-lucide="arrow-right" class="h-4 w-4 text-cr-coral"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- TRUST BAND -->
+  <section class="border-b border-cr-ink/5 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <p class="text-center text-[10px] font-bold uppercase tracking-[0.28em] text-cr-slate mb-10">
+        Used by mission driven teams and practical operators
+      </p>
+      <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 text-cr-slate/70">
+        <span class="text-lg font-semibold">Nonprofits</span>
+        <span class="text-lg font-semibold">Ministries</span>
+        <span class="text-lg font-semibold">Small business</span>
+        <span class="text-lg font-semibold">Lean teams</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CURRICULUM -->
+  <section id="curriculum" class="py-24 lg:py-32 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-20">
+        <span class="text-cr-slate font-semibold text-xs uppercase tracking-[0.22em] block mb-4">The build</span>
+        <h2 class="text-4xl md:text-5xl font-serif text-cr-ink ridge-border pb-6">The 9 sessions</h2>
+        <p class="text-cr-slate mt-8 max-w-2xl mx-auto text-lg font-light">
+          Each session is anchored to one book and produces one concrete build output. No fluff, no busywork.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- SESSION CARD TEMPLATE: duplicate for 01 to 09 -->
+        <div class="card-hover bg-white p-10 border border-cr-ink/10 rounded-2xl relative">
+          <div class="text-cr-ink/10 font-mono text-6xl absolute top-5 right-6">01</div>
+          <div class="mb-8">
+            <span class="text-cr-teal-900 text-xs font-semibold uppercase tracking-[0.22em]">Category</span>
+          </div>
+          <h4 class="text-2xl font-serif text-cr-ink mb-2">Book title placeholder</h4>
+          <p class="text-cr-slate text-xs uppercase tracking-[0.18em] mb-6">By Author</p>
+          <div class="h-px w-full bg-cr-ink/10 mb-6"></div>
+          <p class="text-cr-slate font-light leading-relaxed">
+            <strong class="text-cr-ink font-semibold">Build output:</strong>
+            Artifact placeholder, example: message map, scorecard, workflow, landing page copy.
+          </p>
+        </div>
+
+        <!-- Add cards 02 to 09 after you generate the books -->
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW WE BUILD -->
+  <section class="py-24 lg:py-32 bg-cr-warm border-t border-cr-ink/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-cr-slate font-semibold text-xs uppercase tracking-[0.22em] block mb-4">How we build</span>
+        <h2 class="text-4xl md:text-5xl font-serif text-cr-ink mb-6">Zero theory, full execution</h2>
+        <p class="text-lg text-cr-slate font-light leading-relaxed">
+          Every session ends with something you can use immediately, and something you can reuse next week.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div class="bg-white p-8 border border-cr-ink/10 rounded-2xl">
+          <div class="text-cr-teal-900 font-mono text-4xl mb-4">01</div>
+          <h4 class="text-cr-ink font-semibold text-sm uppercase tracking-[0.22em] mb-3">Scope</h4>
+          <p class="text-cr-slate text-sm font-light">Lock the problem, outcome, constraints, and success metric.</p>
+        </div>
+
+        <div class="bg-white p-8 border border-cr-ink/10 rounded-2xl">
+          <div class="text-cr-teal-900 font-mono text-4xl mb-4">02</div>
+          <h4 class="text-cr-ink font-semibold text-sm uppercase tracking-[0.22em] mb-3">Blueprint</h4>
+          <p class="text-cr-slate text-sm font-light">Extract the one concept and one tool that matter most.</p>
+        </div>
+
+        <div class="bg-cr-teal-900 p-8 rounded-2xl">
+          <div class="text-white font-mono text-4xl mb-4">03</div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-[0.22em] mb-3">Build</h4>
+          <p class="text-white/80 text-sm font-light">
+            Build the artifact live, example: page copy, workflow, prompt pack, SOP, scorecard.
+          </p>
+        </div>
+
+        <div class="bg-white p-8 border border-cr-ink/10 rounded-2xl">
+          <div class="text-cr-teal-900 font-mono text-4xl mb-4">04</div>
+          <h4 class="text-cr-ink font-semibold text-sm uppercase tracking-[0.22em] mb-3">Deploy</h4>
+          <p class="text-cr-slate text-sm font-light">Test it, simplify it, and put it where it will be used.</p>
+        </div>
+      </div>
+
+      <div class="mt-16 text-center">
+        <p class="text-cr-ink font-serif text-xl italic">
+          We do not end until the work is usable.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACT -->
+  <section id="impact" class="py-24 lg:py-32 bg-white border-t border-cr-ink/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-14 items-start">
+        <div>
+          <span class="text-cr-slate font-semibold text-xs uppercase tracking-[0.22em] block mb-4">Expected outcomes</span>
+          <h2 class="text-4xl md:text-5xl font-serif text-cr-ink mb-6">What changes after the build</h2>
+          <p class="text-cr-slate text-lg font-light leading-relaxed">
+            Replace these placeholders with your numbers once you have them. If you do not have numbers, use time saved and fewer errors.
+          </p>
+
+          <div class="mt-10 bg-white p-8 border-l-4 border-cr-coral rounded-2xl border border-cr-ink/10">
+            <h4 class="font-serif text-xl text-cr-ink mb-3">The business case</h4>
+            <p class="text-cr-slate text-sm font-light leading-relaxed">
+              If solving this problem saves 3 hours per week per person, a 10 person team gets back 120 hours per month.
+              That is the point. Clear wins, then scale.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid gap-4">
+          <div class="bg-white p-8 border border-cr-ink/10 rounded-2xl flex items-center justify-between">
+            <div>
+              <div class="text-cr-slate text-[10px] font-semibold uppercase tracking-[0.22em] mb-2">Time to first usable output</div>
+              <div class="text-4xl font-serif text-cr-ink">1 session</div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-cr-slate font-light">Placeholder</span>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 border border-cr-ink/10 rounded-2xl flex items-center justify-between">
+            <div>
+              <div class="text-cr-slate text-[10px] font-semibold uppercase tracking-[0.22em] mb-2">Work rework reduction</div>
+              <div class="text-4xl font-serif text-cr-ink">25%</div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-cr-slate font-light">Placeholder</span>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 border border-cr-ink/10 rounded-2xl flex items-center justify-between">
+            <div>
+              <div class="text-cr-slate text-[10px] font-semibold uppercase tracking-[0.22em] mb-2">Decision speed improvement</div>
+              <div class="text-4xl font-serif text-cr-ink">2x</div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-cr-slate font-light">Placeholder</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENROLLMENT -->
+  <section id="enrollment" class="py-24 lg:py-32 bg-white border-t border-cr-ink/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-cr-slate font-semibold text-xs uppercase tracking-[0.22em] block mb-4">Engagement options</span>
+        <h2 class="text-4xl md:text-5xl font-serif text-cr-ink mb-6">Choose your path</h2>
+        <p class="text-cr-slate font-light text-lg">Replace pricing and bullets with your real offer.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="bg-white border border-cr-ink/10 p-10 rounded-2xl flex flex-col hover:border-cr-ink/25 transition">
+          <div class="mb-6">
+            <div class="text-cr-slate font-semibold text-[10px] uppercase tracking-[0.22em] mb-4">DIY</div>
+            <h3 class="text-3xl font-serif text-cr-ink mb-2">Do it yourself</h3>
+            <p class="text-cr-slate text-sm font-light mt-4">Templates and guides. You build.</p>
+          </div>
+          <div class="flex items-baseline gap-2 mb-10 pb-10 border-b border-cr-ink/10">
+            <span class="text-4xl font-serif text-cr-ink">$X</span>
+            <span class="text-cr-slate text-sm">One time</span>
+          </div>
+          <ul class="space-y-5 mb-10 flex-grow text-cr-slate text-sm font-light">
+            <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 mt-0.5 text-cr-teal-900"></i><span>9 session playbook</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 mt-0.5 text-cr-teal-900"></i><span>Artifact templates</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 mt-0.5 text-cr-teal-900"></i><span>Examples and checklists</span></li>
+          </ul>
+          <button class="w-full bg-white border border-cr-ink/20 text-cr-ink px-6 py-4 rounded-xl font-semibold text-xs hover:bg-cr-warm transition uppercase tracking-[0.22em]">
+            Get started
+          </button>
+        </div>
+
+        <div class="bg-cr-teal-900 border border-cr-teal-900 p-10 rounded-2xl flex flex-col relative transform md:-translate-y-4 shadow-soft">
+          <div class="absolute top-0 right-0 bg-white text-cr-ink font-semibold text-[10px] uppercase px-4 py-2 tracking-[0.22em] rounded-bl-2xl">Most popular</div>
+          <div class="mb-6">
+            <div class="text-white/70 font-semibold text-[10px] uppercase tracking-[0.22em] mb-4">Done with you</div>
+            <h3 class="text-3xl font-serif text-white mb-2">Build together</h3>
+            <p class="text-white/80 text-sm font-light mt-4">Live sessions. We ship usable outputs every time.</p>
+          </div>
+          <div class="flex items-baseline gap-2 mb-10 pb-10 border-b border-white/10">
+            <span class="text-4xl font-serif text-white">$X</span>
+            <span class="text-white/70 text-sm">Program</span>
+          </div>
+          <ul class="space-y-5 mb-10 flex-grow text-white/85 text-sm font-light">
+            <li class="flex items-start gap-3"><i data-lucide="star" class="w-4 h-4 mt-0.5 text-white"></i><span>9 live build sessions</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="star" class="w-4 h-4 mt-0.5 text-white"></i><span>Feedback and iteration</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="star" class="w-4 h-4 mt-0.5 text-white"></i><span>All DIY materials included</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="star" class="w-4 h-4 mt-0.5 text-white"></i><span>Deployment checklist</span></li>
+          </ul>
+          <button class="w-full bg-white text-cr-ink px-6 py-4 rounded-xl font-semibold text-xs hover:bg-white/90 transition uppercase tracking-[0.22em]">
+            Start project
+          </button>
+        </div>
+
+        <div class="bg-white border border-cr-ink/10 p-10 rounded-2xl flex flex-col hover:border-cr-ink/25 transition">
+          <div class="mb-6">
+            <div class="text-cr-slate font-semibold text-[10px] uppercase tracking-[0.22em] mb-4">Done for you</div>
+            <h3 class="text-3xl font-serif text-cr-ink mb-2">Turnkey implementation</h3>
+            <p class="text-cr-slate text-sm font-light mt-4">We build the system, then hand you the keys.</p>
+          </div>
+          <div class="flex items-baseline gap-2 mb-10 pb-10 border-b border-cr-ink/10">
+            <span class="text-4xl font-serif text-cr-ink">$X</span>
+            <span class="text-cr-slate text-sm">Engagement</span>
+          </div>
+          <ul class="space-y-5 mb-10 flex-grow text-cr-slate text-sm font-light">
+            <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 mt-0.5 text-cr-teal-900"></i><span>Full buildout</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 mt-0.5 text-cr-teal-900"></i><span>Documentation and handoff</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 mt-0.5 text-cr-teal-900"></i><span>Team enablement session</span></li>
+            <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 mt-0.5 text-cr-teal-900"></i><span>Support window</span></li>
+          </ul>
+          <button class="w-full bg-white border border-cr-ink/20 text-cr-ink px-6 py-4 rounded-xl font-semibold text-xs hover:bg-cr-warm transition uppercase tracking-[0.22em]">
+            Schedule consult
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-16 text-center">
+        <p class="text-cr-slate text-sm font-light">
+          Unsure of fit? Offer a short call or a short intake form link here.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-white py-12 border-t border-cr-ink/10">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="flex items-center gap-3">
+        <i data-lucide="mountain" class="h-5 w-5 text-cr-slate"></i>
+        <span class="font-serif text-lg text-cr-ink">Catalyst Ridge Advisory</span>
+      </div>
+      <p class="text-cr-slate text-xs font-light tracking-[0.18em] uppercase">&copy; 2026 Catalyst Ridge Advisory</p>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
