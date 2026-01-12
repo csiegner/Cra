@@ -100,13 +100,6 @@
       background: rgba(255,107,90,.12);
       border-color: rgba(255,107,90,.30);
     }
-    code{
-      background: rgba(0,0,0,.06);
-      padding:2px 6px;
-      border-radius:8px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-    }
   </style>
 </head>
 
@@ -147,14 +140,6 @@
       return url.searchParams.get(name);
     }
 
-    function safeNextPath(next) {
-      const raw = String(next || "").trim();
-      if (!raw) return "/admin/publisher/index.html";
-      if (!raw.startsWith("/")) return "/admin/publisher/index.html";
-      if (raw.startsWith("//")) return "/admin/publisher/index.html";
-      return raw;
-    }
-
     function resolveMessage(msgKey) {
       switch (msgKey) {
         case "please-login": return "Please sign in to access the Publisher tool.";
@@ -165,26 +150,46 @@
       }
     }
 
+    function normalizeNext(rawNext) {
+      // Only allow same-origin relative paths
+      let next = String(rawNext || "").trim();
+      if (!next || !next.startsWith("/") || next.startsWith("//")) {
+        next = "/admin/publisher/index.html";
+      }
+
+      // Normalize the two problematic variants that cause your 404
+      if (next === "/admin/publisher" || next === "/admin/publisher/") {
+        next = "/admin/publisher/index.html";
+      }
+
+      // If someone passes /admin/publisher/?x=y, keep query but normalize path
+      if (next.startsWith("/admin/publisher/?")) {
+        next = "/admin/publisher/index.html" + next.substring("/admin/publisher/".length);
+      }
+
+      return next;
+    }
+
     function boot() {
       if (!window.netlifyIdentity) {
         setStatus("err", "Netlify Identity widget did not load.");
         return;
       }
 
-      const next = safeNextPath(getParam("next"));
       const msg = resolveMessage(getParam("msg"));
+      const next = normalizeNext(getParam("next"));
+
       if (msg) setStatus("ok", msg);
 
-      // Wait for Identity to fully initialize before deciding anything.
+      // Wait for Identity to finish init before redirecting
       window.netlifyIdentity.on("init", (user) => {
         if (user) {
           setStatus("ok", "You are already logged in. Redirecting…");
-          setTimeout(() => { window.location.href = next; }, 250);
+          setTimeout(() => { window.location.href = next; }, 200);
           return;
         }
-
-        // Not logged in, stay on login screen.
-        setStatus(msg ? "ok" : "", msg || "");
+        // Not logged in, stay here
+        if (!msg) setStatus("", "");
       });
 
       loginBtn.addEventListener("click", () => {
@@ -193,21 +198,20 @@
       });
 
       goPublisherBtn.addEventListener("click", () => {
-        // If publisher page gates correctly, this is safe.
-        window.location.href = next || "/admin/publisher/index.html";
+        // Publisher page should gate, and we normalize to a working path
+        window.location.href = "/admin/publisher/index.html";
       });
 
       window.netlifyIdentity.on("login", () => {
         setStatus("ok", "Logged in. Redirecting…");
         window.netlifyIdentity.close();
-        setTimeout(() => { window.location.href = next; }, 250);
+        setTimeout(() => { window.location.href = next; }, 200);
       });
 
       window.netlifyIdentity.on("error", (err) => {
         setStatus("err", err && err.message ? err.message : "Login error.");
       });
 
-      // Start initialization last
       window.netlifyIdentity.init();
     }
 
