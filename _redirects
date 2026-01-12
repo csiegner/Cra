@@ -1,4 +1,2 @@
-/.netlify/*  /.netlify/:splat  200
-
-/admin/*     /admin/login.html  302  Role=!admin
-/admin/*     /admin/:splat      200  Role=admin
+/admin        /admin/        301
+/admin/publisher  /admin/publisher/  301
